@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>🦝 - Search Engine</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 60px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Search Engine Web 1.0</h1>
+    </header>
+
+    <div class="search-box">
+        <input type="text" placeholder="Rechercher sur le web..." id="search-box">
+        <button onclick="nextFunction()">Rechercher</button>
+    </div>
+
+    <!--
+    Dissimuler jusqu'à que la recherche soit envoyé
+    -->
+    <div class="search-info" id="searchInfo" style="display: none;">
+        <p class="search-time">Environ <strong id="resultCount">0</strong> résultats (temps de recherche : <strong
+                id="searchTime">0.00</strong> secondes)</p>
+    </div>
+
+    <div class="results-container" id="resultsContainer">
+        <!--
+        S'enlève quand la recherche est envoyé
+        -->
+        <div class="no-results">
+            <div class="no-results-icon">🔍</div>
+            <p>Entrez votre recherche ci-dessus pour commencer</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
