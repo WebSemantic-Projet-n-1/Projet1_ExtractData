@@ -66,7 +66,5 @@ def getFirstTeamInClassment():
 
     return None
 
-
-
 # R1
 # getFirstTeamInClassment()
