@@ -12,3 +12,5 @@
 > Rule : interdiction de push dans main/dev
 
 > Settings > rulesets
+
+> Test
