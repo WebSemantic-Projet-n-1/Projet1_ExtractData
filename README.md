@@ -13,4 +13,5 @@
 
 > Settings > rulesets
 
-> Test
+# API
+> fastapi dev api.py
