@@ -5,19 +5,16 @@ from bs4 import BeautifulSoup
 # Utilise beautifulsoup permettant de filtrer avec les balises
 # https://beautiful-soup-4.readthedocs.io/en/latest/#output
 def getContentByUrl(url):
-
-    print(url)
-
     with open(url, 'r', encoding='utf-8') as f:
         content = f.read()
 
     soup = BeautifulSoup(content, 'html.parser')
 
     if soup is not None:
-        print('content: ' + soup.prettify())
+        print('content succès')
         return soup
     else:
-        print('content echec')
+        print('content echec ' + url)
         return None
 
 # GET = Title, WITH = soup
@@ -49,6 +46,18 @@ def getFirstRowInArray(soup):
 
     return None
 
+# GET = balise P, WITH soup, className, Number
+# ClassName de la DIV ; Number en array 0-1-2 etc...
+# Sources : Reddit, google
+def getParagrapheFromDiv(soup, className = 'NoClass', number = 0):
+    statsbox = soup.find_all('div', class_=className)
+
+    if statsbox is not None:
+        return statsbox[number].find_all("p")
+    else:
+        return None
+
+
 
 # Réponse R1
 def getFirstTeamInClassment():
@@ -66,5 +75,27 @@ def getFirstTeamInClassment():
 
     return None
 
+# Réponse R2
+def getNumberOfMatchesPlayedThisSeason():
+    url = 'statistiques.html'
+
+    soup = getContentByUrl(url)
+
+    sentences = getParagrapheFromDiv(soup, 'stat-box', 0)
+
+    sentence = sentences[0]
+
+    strong = sentence.find("strong").get_text(strip=True)
+    numberOfMatchesPlayedThisSeason = sentence.get_text(strip=True).replace(strong, "").strip()
+
+    if numberOfMatchesPlayedThisSeason is not None:
+        print(numberOfMatchesPlayedThisSeason)
+        return numberOfMatchesPlayedThisSeason
+    else:
+        return None
+
 # R1
 # getFirstTeamInClassment()
+
+# R2
+# getNumberOfMatchesPlayedThisSeason()
