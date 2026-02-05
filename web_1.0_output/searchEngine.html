@@ -121,6 +121,33 @@
             margin-bottom: 20px;
             opacity: 0.3;
         }
+
+        .result-item {
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #ff8c00;
+        }
+
+        .result-item h3 {
+            color: #1e3c72;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .result-item p {
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .search-error {
+            text-align: center;
+            color: #c0392b;
+            padding: 20px;
+            background: #fadbd8;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -129,10 +156,10 @@
         <h1>Search Engine Web 1.0</h1>
     </header>
 
-    <div class="search-box">
-        <input type="text" placeholder="Rechercher sur le web..." id="search-box">
-        <button onclick="nextFunction()">Rechercher</button>
-    </div>
+    <form id="searchForm" class="search-box" aria-label="Recherche">
+        <input type="text" name="q" placeholder="Rechercher sur le web..." id="searchInput" autocomplete="off">
+        <button type="submit">Rechercher</button>
+    </form>
 
     <!--
     Dissimuler jusqu'à que la recherche soit envoyé
@@ -143,14 +170,85 @@
     </div>
 
     <div class="results-container" id="resultsContainer">
-        <!--
-        S'enlève quand la recherche est envoyé
-        -->
-        <div class="no-results">
+        <div class="no-results" id="noResultsPlaceholder">
             <div class="no-results-icon">🔍</div>
             <p>Entrez votre recherche ci-dessus pour commencer</p>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        var form = document.getElementById('searchForm');
+        var searchInput = document.getElementById('searchInput');
+        var resultsContainer = document.getElementById('resultsContainer');
+        var searchInfo = document.getElementById('searchInfo');
+        var resultCountEl = document.getElementById('resultCount');
+        var searchTimeEl = document.getElementById('searchTime');
+
+        function escapeHtml(text) {
+            if (text == null) return '';
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showNoResults(message) {
+            resultsContainer.innerHTML =
+                '<div class="no-results" id="noResultsPlaceholder">' +
+                '<div class="no-results-icon">🔍</div>' +
+                '<p>' + escapeHtml(message) + '</p>' +
+                '</div>';
+        }
+
+        function showError(message) {
+            resultsContainer.innerHTML = '<div class="search-error">' + escapeHtml(message) + '</div>';
+        }
+
+        function renderResults(datas) {
+            if (!datas || datas.length === 0) {
+                showNoResults('Aucun résultat pour cette recherche.');
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < datas.length; i++) {
+                var item = datas[i];
+                html += '<div class="result-item">' +
+                    '<h3>' + escapeHtml(item.title) + '</h3>' +
+                    '<p>' + escapeHtml(String(item.answer)) + '</p>' +
+                    '</div>';
+            }
+            resultsContainer.innerHTML = html;
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var query = searchInput.value.trim();
+            if (!query) return;
+
+            var start = performance.now();
+            var url = '/requests/' + encodeURIComponent(query);
+
+            fetch(url)
+                .then(function (res) {
+                    if (!res.ok) throw new Error('Erreur ' + res.status);
+                    return res.json();
+                })
+                .then(function (data) {
+                    var elapsed = (performance.now() - start) / 1000;
+                    resultCountEl.textContent = data.datas ? data.datas.length : 0;
+                    searchTimeEl.textContent = elapsed.toFixed(2);
+                    searchInfo.style.display = 'block';
+                    renderResults(data.datas);
+                })
+                .catch(function (err) {
+                    searchInfo.style.display = 'block';
+                    resultCountEl.textContent = '0';
+                    searchTimeEl.textContent = '0.00';
+                    showError('Impossible de joindre l\'API. ' + err.message);
+                });
+        });
+    })();
+</script>
 </body>
 </html>
