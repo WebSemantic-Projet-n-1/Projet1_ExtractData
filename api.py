@@ -1,15 +1,9 @@
 import searchEngine
+from fastapi import APIRouter
 
-from fastapi import FastAPI
+router = APIRouter()
 
-app = FastAPI()
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-@app.get("/requests/{request_question}")
+@router.get("/requests/{request_question}")
 def read_request(request_question: str):
 
     datas = []

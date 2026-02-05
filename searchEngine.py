@@ -61,7 +61,7 @@ def getParagrapheFromDiv(soup, className = 'NoClass', number = 0):
 
 # Réponse R1
 def getFirstTeamInClassment():
-    url = 'classement.html'
+    url = 'web_1.0_output/classement.html'
 
     soup = getContentByUrl(url)
 
@@ -77,7 +77,7 @@ def getFirstTeamInClassment():
 
 # Réponse R2
 def getNumberOfMatchesPlayedThisSeason():
-    url = 'statistiques.html'
+    url = 'web_1.0_output/statistiques.html'
 
     soup = getContentByUrl(url)
 
