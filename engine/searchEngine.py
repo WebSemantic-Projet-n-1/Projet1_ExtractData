@@ -5,6 +5,7 @@ Script that contains the functions to respond to the 12 questions/requests
 
 import engine.searchUtils as searchUtils
 
+
 # Réponse R1
 def getFirstTeamInClassment():
     url = 'web_1.0_output/classement.html'
@@ -20,6 +21,7 @@ def getFirstTeamInClassment():
         return nameOfTheTeam
 
     return None
+
 
 # Réponse R2
 def getNumberOfMatchesPlayedThisSeason():
@@ -40,6 +42,7 @@ def getNumberOfMatchesPlayedThisSeason():
     else:
         return None
 
+
 # Réponse R3
 def getNumberOfGoals():
     url = 'web_1.0_output/statistiques.html'
@@ -58,6 +61,7 @@ def getNumberOfGoals():
         return numberOfGoalsThisSeason
     else:
         return None
+
 
 # Réponse R4
 def getTeamWithMostGoals():
@@ -79,3 +83,37 @@ def getTeamWithMostGoals():
     if team and goals:
         return f"{team} ({goals} buts)"
     return None
+
+
+# Réponse R5
+def getTeamsOver70Goals():
+    url = 'web_1.0_output/classement.html'
+    soup = searchUtils.getContentByUrl(url)
+    if soup is None:
+        return None
+
+    table = soup.find('table')
+    if table is None:
+        return None
+
+    rows = table.find_all('tr')
+
+    # On ignore la première ligne (header)
+    teams = []
+
+    for row in rows[1:]:  # toutes les lignes sauf l'entête
+        cols = row.find_all('td')
+        if len(cols) < 3:
+            continue
+
+        team_name = cols[1].get_text(strip=True)
+        goals = cols[2].get_text(strip=True)
+
+        # Vérifie que goals est un nombre et > 70
+        try:
+            if int(goals) > 70:
+                teams.append(team_name)
+        except ValueError:
+            continue
+
+    return teams if teams else None
