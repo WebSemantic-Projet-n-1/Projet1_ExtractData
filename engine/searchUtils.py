@@ -69,3 +69,6 @@ def getTableRows(soup):
     rows = table.find_all('tr')
     return rows[1:] if len(rows) >= 2 else []
 
+def getMatchResultDivs(soup):
+    """Return all div.match-result elements (for equipe pages)."""
+    return soup.find_all('div', class_='match-result')

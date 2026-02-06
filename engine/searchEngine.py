@@ -142,3 +142,16 @@ def getMatchesNovember2008():
     return matches
 
 
+# Réponse R7
+def getManchesterUnitedHomeWins():
+    url = 'web_1.0_output/equipe_Manchester_United.html'
+    soup = searchUtils.getContentByUrl(url)
+    if soup is None:
+        return None
+    divs = searchUtils.getMatchResultDivs(soup)
+    count = 0
+    for div in divs:
+        text = div.get_text()
+        if "Domicile" in text and "Victoire" in text:
+            count += 1
+    return count
