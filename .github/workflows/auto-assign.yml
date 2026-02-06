@@ -16,6 +16,6 @@ jobs:
       with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: T4rg3n, kiloutyg, AlexBOYERE
-          numOfAssignee: 1
+          numOfAssignee: 2
           abortIfPreviousAssignees: true
           allowSelfAssign: true
