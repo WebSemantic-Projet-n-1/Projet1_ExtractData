@@ -39,9 +39,3 @@ def getNumberOfMatchesPlayedThisSeason():
         return numberOfMatchesPlayedThisSeason
     else:
         return None
-
-# R1
-# getFirstTeamInClassment()
-
-# R2
-# getNumberOfMatchesPlayedThisSeason()
