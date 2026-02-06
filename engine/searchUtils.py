@@ -62,5 +62,10 @@ def getParagrapheFromDiv(soup, className = 'NoClass', number = 0):
     else:
         return None
 
-
+def getTableRows(soup):
+    table = soup.find('table')
+    if table is None:
+        return []
+    rows = table.find_all('tr')
+    return rows[1:] if len(rows) >= 2 else []
 
