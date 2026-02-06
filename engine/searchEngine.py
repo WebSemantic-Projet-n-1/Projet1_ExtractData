@@ -39,3 +39,24 @@ def getNumberOfMatchesPlayedThisSeason():
         return numberOfMatchesPlayedThisSeason
     else:
         return None
+
+# Réponse R4
+def getTeamWithMostGoals():
+    url = 'web_1.0_output/statistiques.html'
+    soup = searchUtils.getContentByUrl(url)
+    if soup is None:
+        return None
+    paras = searchUtils.getParagrapheFromDiv(soup, 'stat-box', 1)
+    if not paras or len(paras) < 2:
+        return None
+    team_p = paras[0]
+    goals_p = paras[1]
+    team_strong = team_p.find("strong")
+    goals_strong = goals_p.find("strong")
+    if team_strong is None or goals_strong is None:
+        return None
+    team = team_p.get_text(strip=True).replace(team_strong.get_text(strip=True), "").strip().strip(":")
+    goals = goals_p.get_text(strip=True).replace(goals_strong.get_text(strip=True), "").strip().strip(":")
+    if team and goals:
+        return f"{team} ({goals} buts)"
+    return None
