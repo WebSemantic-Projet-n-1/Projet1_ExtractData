@@ -8,6 +8,6 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     # Return the search engine page
-    return FileResponse("web_1.0_output/searchEngine.html")
+    return FileResponse("pages/searchEngine.html")
 
 app.include_router(api_router)
