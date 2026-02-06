@@ -117,3 +117,28 @@ def getTeamsOver70Goals():
             continue
 
     return teams if teams else None
+
+
+# Réponse R6
+def getMatchesNovember2008():
+    url = 'web_1.0_output/calendrier.html'
+    soup = searchUtils.getContentByUrl(url)
+    if soup is None:
+        return []
+    rows = searchUtils.getTableRows(soup)
+    matches = []
+    for row in rows:
+        tds = row.find_all('td')
+        if len(tds) < 4:
+            continue
+        date = tds[0].get_text(strip=True)
+        if "/11/2008" not in date:
+            continue
+        home = tds[1].get_text(strip=True)
+        score_el = tds[2].find(class_='score')
+        score = score_el.get_text(strip=True) if score_el else tds[2].get_text(strip=True)
+        away = tds[3].get_text(strip=True)
+        matches.append(f"{date} | {home} | {score} | {away}")
+    return matches
+
+
