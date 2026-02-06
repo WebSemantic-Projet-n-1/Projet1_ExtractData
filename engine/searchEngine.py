@@ -5,6 +5,18 @@ Script that contains the functions to respond to the 12 questions/requests
 
 import engine.searchUtils as searchUtils
 
+# Teams ("equipe_*.html" files)
+EQUIPE_FILES = [
+    'equipe_Aston_Villa.html',
+    'equipe_Chelsea.html',
+    'equipe_Everton.html',
+    'equipe_Fulham.html',
+    'equipe_Liverpool.html',
+    'equipe_Manchester_City.html',
+    'equipe_Manchester_United.html',
+    'equipe_Tottenham_Hotspur.html',
+    'equipe_West_Ham_United.html',
+]
 
 # Réponse R1
 def getFirstTeamInClassment():
@@ -155,3 +167,20 @@ def getManchesterUnitedHomeWins():
         if "Domicile" in text and "Victoire" in text:
             count += 1
     return count
+
+# Réponse R8
+def getRankingByAwayWins():
+    base = 'web_1.0_output'
+    results = []
+    for filename in EQUIPE_FILES:
+        path = base + '/' + filename
+        soup = searchUtils.getContentByUrl(path)
+        if soup is None:
+            continue
+        h1 = soup.find('h1')
+        team_name = h1.get_text(strip=True) if h1 else "Inconnu"
+        divs = searchUtils.getMatchResultDivs(soup)
+        away_wins = sum(1 for d in divs if "Extérieur" in d.get_text() and "Victoire" in d.get_text())
+        results.append((team_name, away_wins))
+    results.sort(key=lambda x: x[1], reverse=True)
+    return [f"{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
