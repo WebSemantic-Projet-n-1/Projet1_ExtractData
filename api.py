@@ -11,7 +11,7 @@ def read_request(request_question: str):
     rules = [
         (['première', 'classement'], "Question 1", searchEngine.getFirstTeamInClassment()),
         (['matchs', 'joués', 'saison'], "Question 2", searchEngine.getNumberOfMatchesPlayedThisSeason()),
-        (['nombre', 'total', 'buts', 'saison'], "Question 3", "Réponse"),
+        (['nombre', 'total', 'buts', 'saison'], "Question 3", searchEngine.getNumberOfGoals()),
         (['équipe', 'marqué', 'le plus de buts'], "Question 4", searchEngine.getTeamWithMostGoals()),
         (['équipes', 'marqué', 'plus de 70 buts', 'saison'], "Question 5", "Réponse"),
         (['matchs', 'novembre 2008'], "Question 6", "Réponse"),
