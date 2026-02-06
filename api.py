@@ -13,7 +13,7 @@ def read_request(request_question: str):
         (['matchs', 'joués', 'saison'], "Question 2", searchEngine.getNumberOfMatchesPlayedThisSeason()),
         (['nombre', 'total', 'buts', 'saison'], "Question 3", searchEngine.getNumberOfGoals()),
         (['équipe', 'marqué', 'le plus de buts'], "Question 4", searchEngine.getTeamWithMostGoals()),
-        (['équipes', 'marqué', 'plus de 70 buts', 'saison'], "Question 5", "Réponse"),
+        (['équipes', 'marqué', 'plus de 70 buts', 'saison'], "Question 5", searchEngine.getTeamsOver70Goals()),
         (['matchs', 'novembre 2008'], "Question 6", "Réponse"),
         (['victoires', 'domicile', 'Manchester', 'United'], "Question 7", "Réponse"),
         (['classement', 'équipes', 'nombre', 'victoires', 'extérieur'], "Question 8", "Réponse"),
