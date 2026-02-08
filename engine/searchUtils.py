@@ -16,7 +16,6 @@ def getContentByUrl(url):
     soup = BeautifulSoup(content, 'html.parser')
 
     if soup is not None:
-        print('content succès')
         return soup
     else:
         print('content echec ' + url)
