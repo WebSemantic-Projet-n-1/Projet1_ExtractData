@@ -189,3 +189,58 @@ def getRankingByAwayWins():
         results.append((team_name, away_wins))
     results.sort(key=lambda x: x[1], reverse=True)
     return [f"{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
+
+def getTop6Teams():
+    url = 'web_1.0_output/classement.html'
+    soup = searchUtils.getContentByUrl(url)
+    if soup is None:
+        return []
+
+    rows = searchUtils.getTableRows(soup)
+    teams = []
+
+    for row in rows[:6]:  # les 6 premières lignes du tableau
+        tds = row.find_all('td')
+        if len(tds) < 2:
+            continue
+        team_name = tds[1].get_text(strip=True)
+        teams.append(team_name)
+
+    return teams
+
+# Réponse R9
+def getAwayGoalsForTop6():
+    top6 = getTop6Teams()
+    url = 'web_1.0_output/calendrier.html'
+    soup = searchUtils.getContentByUrl(url)
+    if soup is None:
+        return ''
+
+    rows = searchUtils.getTableRows(soup)
+
+    away_goals = {team: 0 for team in top6}
+
+    for row in rows:
+        tds = row.find_all('td')
+        if len(tds) < 4:
+            continue
+
+        score_el = tds[2].find(class_='score')
+        score = score_el.get_text(strip=True) if score_el else tds[2].get_text(strip=True)
+        away = tds[3].get_text(strip=True)
+
+        # score format "2 - 1"
+        if "-" not in score:
+            continue
+
+        home_goals, away_goals_nb = score.split("-")
+        away_goals_nb = int(away_goals_nb.strip())
+
+        if away in away_goals:
+            away_goals[away] += away_goals_nb
+
+    result_lines = ["Buts marqués à l'extérieur par les équipes du Top 6 :"]
+    for team, goals in away_goals.items():
+        result_lines.append(f"{team} : {goals} buts")
+
+    return "\n".join(result_lines)
