@@ -17,7 +17,7 @@ def read_request(request_question: str):
     datas = []
 
     # region Rules
-    # Dict of function references (not calls, that's important for benchmark)
+    # List of rule definitions with function references (not calls, that's important for benchmark)
     rules = [
         {
             'keywords': ['première', 'classement'],
