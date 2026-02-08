@@ -38,7 +38,7 @@ def read_request(request_question: str):
         if all(word in request_normalized for word in words_norm):
             matches.append((len(words_norm), title, answer))
 
-    # Chose the rule with the most keywords
+    # Choose the rule with the most keywords
     if matches:
         max_keywords = max(m[0] for m in matches)
         datas = [{"title": m[1], "answer": m[2]} for m in matches if m[0] == max_keywords]
