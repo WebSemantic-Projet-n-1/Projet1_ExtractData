@@ -62,12 +62,12 @@ def read_request(request_question: str):
         {
             'keywords': ['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'],
             'title': "Question 9",
-            'answer': searchEngine.getAwayGoalsForTop6 
+            'answer': searchEngine.getAwayGoalsForTop6
         },
         {
             'keywords': ['confrontations', 'historiques', 'championnat'],
             'title': "Question 10",
-            'answer': searchEngine.getConfrontationsFirstVsThird  
+            'answer': searchEngine.getConfrontationsFirstVsThird
         },
     ]
     # endregion
