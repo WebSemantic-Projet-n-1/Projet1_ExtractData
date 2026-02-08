@@ -25,7 +25,7 @@ def read_request(request_question: str):
         (['matchs', 'novembre 2008'], "Question 6", searchEngine.getMatchesNovember2008()),
         (['victoires', 'domicile', 'Manchester', 'United'], "Question 7", searchEngine.getManchesterUnitedHomeWins()),
         (['classement', 'équipes', 'nombre', 'victoires', 'extérieur'], "Question 8", searchEngine.getRankingByAwayWins()),
-        (['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'], "Question 9", "Réponse"),
+        (['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'], "Question 9", searchEngine.getAwayGoalsForTop6()),
         (['confrontations', 'historiques', 'championnat'], "Question 10", "Réponse"),
     ]
     
