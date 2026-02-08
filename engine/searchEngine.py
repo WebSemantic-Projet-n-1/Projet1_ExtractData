@@ -180,7 +180,11 @@ def getRankingByAwayWins():
         h1 = soup.find('h1')
         team_name = h1.get_text(strip=True) if h1 else "Inconnu"
         divs = searchUtils.getMatchResultDivs(soup)
-        away_wins = sum(1 for d in divs if "Extérieur" in d.get_text() and "Victoire" in d.get_text())
+        away_wins = 0
+        for d in divs:
+            text = d.get_text()
+            if "Extérieur" in text and "Victoire" in text:
+                away_wins += 1
         results.append((team_name, away_wins))
     results.sort(key=lambda x: x[1], reverse=True)
     return [f"{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
