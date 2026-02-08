@@ -7,6 +7,7 @@ import engine.searchUtils as searchUtils
 
 # Teams ("equipe_*.html" files)
 EQUIPE_FILES = [
+    'equipe_Arsenal.html',
     'equipe_Aston_Villa.html',
     'equipe_Chelsea.html',
     'equipe_Everton.html',
