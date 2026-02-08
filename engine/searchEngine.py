@@ -229,7 +229,6 @@ def getAwayGoalsForTop6():
         score = score_el.get_text(strip=True) if score_el else tds[2].get_text(strip=True)
         away = tds[3].get_text(strip=True)
 
-        # score format "2 - 1"
         if "-" not in score:
             continue
 
@@ -244,3 +243,68 @@ def getAwayGoalsForTop6():
         result_lines.append(f"{team} : {goals} buts")
 
     return "\n".join(result_lines)
+
+
+def getConfrontationsFirstVsThird():
+    url_rank = 'web_1.0_output/classement.html'
+    soup_rank = searchUtils.getContentByUrl(url_rank)
+    if soup_rank is None:
+        return "Erreur : classement introuvable."
+
+    rows = searchUtils.getTableRows(soup_rank)
+    if len(rows) < 3:
+        return "Erreur : classement incomplet."
+
+    first_team = rows[0].find_all('td')[1].get_text(strip=True)
+    third_team = rows[2].find_all('td')[1].get_text(strip=True)
+
+    url_cal = 'web_1.0_output/calendrier.html'
+    soup_cal = searchUtils.getContentByUrl(url_cal)
+    if soup_cal is None:
+        return "Erreur : calendrier introuvable."
+
+    rows_cal = searchUtils.getTableRows(soup_cal)
+
+    confrontations = []
+
+    for row in rows_cal:
+        tds = row.find_all('td')
+        if len(tds) < 4:
+            continue
+
+        date = tds[0].get_text(strip=True)
+        home = tds[1].get_text(strip=True)
+        score_el = tds[2].find(class_='score')
+        score = score_el.get_text(strip=True) if score_el else tds[2].get_text(strip=True)
+        away = tds[3].get_text(strip=True)
+
+        teams = {home, away}
+        if first_team in teams and third_team in teams:
+            if "-" in score:
+                home_goals, away_goals = score.split("-")
+                home_goals = int(home_goals.strip())
+                away_goals = int(away_goals.strip())
+
+                if home == first_team:
+                    if home_goals > away_goals:
+                        result = "Victoire du premier"
+                    elif home_goals < away_goals:
+                        result = "Défaite du premier"
+                    else:
+                        result = "Match nul"
+                else:  # first_team est à l'extérieur
+                    if away_goals > home_goals:
+                        result = "Victoire du premier"
+                    elif away_goals < home_goals:
+                        result = "Défaite du premier"
+                    else:
+                        result = "Match nul"
+            else:
+                result = "Score invalide"
+
+            confrontations.append(f"{date} | {home} | {score} | {away} | {result}")
+
+    if not confrontations:
+        return f"Aucune confrontation trouvée entre {first_team} et {third_team}."
+
+    return "\n".join(confrontations)
