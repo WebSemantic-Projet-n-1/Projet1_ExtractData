@@ -214,7 +214,7 @@ def getAwayGoalsForTop6():
     url = 'web_1.0_output/calendrier.html'
     soup = searchUtils.getContentByUrl(url)
     if soup is None:
-        return {}
+        return ''
 
     rows = searchUtils.getTableRows(soup)
 
