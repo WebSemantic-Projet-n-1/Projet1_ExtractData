@@ -26,7 +26,7 @@ def read_request(request_question: str):
         (['victoires', 'domicile', 'Manchester', 'United'], "Question 7", searchEngine.getManchesterUnitedHomeWins()),
         (['classement', 'équipes', 'nombre', 'victoires', 'extérieur'], "Question 8", searchEngine.getRankingByAwayWins()),
         (['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'], "Question 9", searchEngine.getAwayGoalsForTop6()),
-        (['confrontations', 'historiques', 'championnat'], "Question 10", "Réponse"),
+        (['confrontations', 'historiques', 'championnat'], "Question 10", searchEngine.getConfrontationsFirstVsThird()),
     ]
     
     # Normalize rule & request
