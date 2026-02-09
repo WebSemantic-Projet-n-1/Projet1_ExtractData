@@ -3,4 +3,3 @@ requests
 rdflib
 fastapi[standard]
 pyRdfa3
-rdflib
