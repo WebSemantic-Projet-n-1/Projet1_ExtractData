@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>🦝 - Search Engine</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        header {
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #ff8c00;
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: #f0f4ff;
+            font-size: 1.1rem;
+        }
+
+        .button-group {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 12px 35px rgba(255, 140, 0, 0.4);
+        }
+
+        .nav-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Search Engine</h1>
+        <p class="subtitle">Choisissez la version de l&apos;interface</p>
+    </header>
+
+    <div class="button-group">
+        <a class="nav-button" href="/web-1.0">Web 1.0</a>
+        <a class="nav-button" href="/web-3.0">Web 3.0</a>
+    </div>
+</div>
+</body>
+</html>

@@ -11,7 +11,7 @@ def normalize(text: str) -> str:
 
 router = APIRouter()
 
-@router.get("/requests/{request_question}")
+@router.get("/requests/v1/{request_question}")
 def read_request(request_question: str):
 
     datas = []
