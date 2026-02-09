@@ -10,7 +10,7 @@
 
 3. Once in the venv, install the requirements `pip install -r requirements.txt`.
 
-4. Download the dataset [on Kaggle](https://www.kaggle.com/code/alaasedeeq/european-soccer-database-with-sqlite3/input) and put the database.sqlite3 file at the project root.
+4. Download the dataset [on Kaggle](https://www.kaggle.com/code/alaasedeeq/european-soccer-database-with-sqlite3/input) and rename the downloaded file to `database.sqlite`, then place it at the project root.
 
 5. Generate the HTML pages : 
 - `python ./build/generate_html_pages.py`
