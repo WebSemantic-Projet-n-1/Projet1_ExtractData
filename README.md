@@ -17,7 +17,7 @@
 - `python ./build/generate_enriched_html_pages.py` (chose 3 : generate both)
 
 6. Generate the knowledge graph :
-`python crawler.py` 
+`python ./build/crawler.py` 
 
 ## Run the project
 
