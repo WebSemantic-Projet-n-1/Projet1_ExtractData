@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """
+WEB 1.0 UTILS FUNCTIONS
 Utils functions to navigate in the html pages
 """
 
