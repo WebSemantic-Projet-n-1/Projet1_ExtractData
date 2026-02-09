@@ -1,19 +1,6 @@
-# Projet1_ExtractData
-> récupérer le code "source"
+# Web Sémantique - Extract Data
 
-> py generate_html_pages.py
-
-# Search Engine PY
-> with open (native) récupère la page 
- 
-> soup filtre à partir du moment qu'on souhaite
-
-# Github
-> Rule : interdiction de push dans main/dev
-
-> Settings > rulesets
-
-# How to run the project
+## Build the project (once)
 
 1. Create Python venv in the project root directory `python -m venv ./.venv`  
 
@@ -23,6 +10,20 @@
 
 3. Once in the venv, install the requirements `pip install -r requirements.txt`.
 
-4. Run the API `fastapi dev main.py` 
+4. Download the dataset [on Kaggle](https://www.kaggle.com/code/alaasedeeq/european-soccer-database-with-sqlite3/input) and put the database.sqlite3 file at the project root.
 
-5. Go to http://127.0.0.1:8000/
+5. Generate the HTML pages : 
+- `python ./build/generate_html_pages.py`
+- `python ./build/generate_enriched_html_pages.py` (chose 3 : generate both)
+
+## Run the project
+
+(This assumes the project has been built as per the instructions above)
+
+1. Activate the venv (if not already activated) : 
+ - Windows `.\.venv\Scripts\activate`
+ - Unix `source .venv/bin/activate`
+
+2. Run the API `fastapi dev main.py` 
+
+3. Go to http://127.0.0.1:8000/
