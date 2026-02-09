@@ -148,9 +148,46 @@
             background: #fadbd8;
             border-radius: 10px;
         }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e3c72;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .back-link span {
+            font-size: 1.1em;
+        }
+
+        .back-link:hover {
+            transform: translateY(-1px);
+            background: #ffffff;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .back-link:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
+<a href="/" class="back-link" aria-label="Retour à l'accueil">
+    <span>←</span>
+    <span>Retour</span>
+</a>
 <div class="container">
     <header>
         <h1>Search Engine Web 1.0</h1>
@@ -227,7 +264,7 @@
             if (!query) return;
 
             var start = performance.now();
-            var url = '/requests/' + encodeURIComponent(query);
+            var url = '/api/v1/' + encodeURIComponent(query);
 
             fetch(url)
                 .then(function (res) {
