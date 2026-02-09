@@ -415,7 +415,7 @@
             if (!query) return;
 
             var start = performance.now();
-            var url = '/requests/' + encodeURIComponent(query);
+            var url = '/api/v3/' + encodeURIComponent(query);
 
             fetch(url)
                 .then(function (res) {

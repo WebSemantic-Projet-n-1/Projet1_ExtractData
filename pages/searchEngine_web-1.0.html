@@ -264,7 +264,7 @@
             if (!query) return;
 
             var start = performance.now();
-            var url = '/requests/' + encodeURIComponent(query);
+            var url = '/api/v1/' + encodeURIComponent(query);
 
             fetch(url)
                 .then(function (res) {
