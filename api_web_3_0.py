@@ -1,4 +1,3 @@
-# import engine.web3.searchEngine as searchEngine
 from fastapi import APIRouter
 
 router = APIRouter()
