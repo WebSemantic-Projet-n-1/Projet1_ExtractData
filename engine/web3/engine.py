@@ -4,7 +4,6 @@ WEB 3.0 SEARCH ENGINE
 Exploits RDFa markup in enriched HTML to answer requests.
 """
 
-from bs4 import BeautifulSoup
 import engine.engine_utils as utils
 
 
