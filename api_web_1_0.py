@@ -1,6 +1,6 @@
+from fastapi import APIRouter
 import engine.web1.engine as searchEngine
 import unicodedata
-from fastapi import APIRouter
 
 # Normalizes text (accents, case, etc.)
 def normalize(text: str) -> str:

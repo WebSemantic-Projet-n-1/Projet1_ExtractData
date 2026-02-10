@@ -4,7 +4,7 @@ WEB 1.0 SEARCH ENGINE
 Script that contains the functions to respond to the 12 questions/requests 
 """
 
-import engine.web1.engine_utils as searchUtils
+import engine.engine_utils as searchUtils
 
 # Teams ("equipe_*.html" files)
 EQUIPE_FILES = [
