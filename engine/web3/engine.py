@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-WEB 3.0 SEARCH ENGINE
+RDF SEARCH ENGINE
 Exploits RDFa markup in enriched HTML to answer requests.
 """
 
@@ -8,6 +8,19 @@ import engine.engine_utils as utils
 import re
 
 BASE_RDFA_DIR = "web_3.0_rdfa_output"
+
+EQUIPE_FILES = [
+    "equipe_Arsenal_enrichi.html",
+    "equipe_Aston_Villa_enrichi.html",
+    "equipe_Chelsea_enrichi.html",
+    "equipe_Everton_enrichi.html",
+    "equipe_Fulham_enrichi.html",
+    "equipe_Liverpool_enrichi.html",
+    "equipe_Manchester_City_enrichi.html",
+    "equipe_Manchester_United_enrichi.html",
+    "equipe_Tottenham_Hotspur_enrichi.html",
+    "equipe_West_Ham_United_enrichi.html",
+]
 
 def _extract_first_int(text):
     if text is None:
@@ -57,3 +70,33 @@ def getNumberOfGoals():
             return str(nb) if nb is not None else None
 
     return None
+
+"""
+R4 - Team with most goals
+Find the team with most goals using goalsScored property from EQUIPE_FILES
+"""
+def getTeamWithMostGoals():
+    best_team = None
+    best_goals = -1
+
+    for filename in EQUIPE_FILES:
+        url = f"{BASE_RDFA_DIR}/{filename}"
+        soup = utils.getContentByUrl(url)
+        if not soup:
+            continue
+
+        name_el = soup.find(attrs={"property": "name"})
+        goals_el = soup.find(attrs={"property": "goalsScored"})
+        if name_el is None or goals_el is None:
+            continue
+
+        team_name = name_el.get_text(strip=True)
+        goals = _extract_first_int(goals_el.get_text(strip=True))
+        if team_name and goals is not None and goals > best_goals:
+            best_goals = goals
+            best_team = team_name
+
+    if best_team is not None and best_goals >= 0:
+        return f"{best_team} ({best_goals} buts)"
+    return None
+

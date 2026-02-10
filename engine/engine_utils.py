@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Utils functions (shared between web1 and web3)
+Utils functions (shared between the different engines)
 """
 
 from bs4 import BeautifulSoup

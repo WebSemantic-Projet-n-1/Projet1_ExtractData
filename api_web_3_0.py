@@ -34,7 +34,7 @@ def read_request(request_question: str):
         {
             'keywords': ['équipe', 'marqué', 'le plus de buts'],
             'title': "Question 4",
-            'answer': "Réponse 4"
+            'answer': web3Engine.getTeamWithMostGoals
         },
         {
             'keywords': ['équipes', 'marqué', 'plus de 70 buts', 'saison'],
