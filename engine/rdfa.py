@@ -55,6 +55,31 @@ def getFirstTeamInClassment():
         return name
     return None
 
+
+"""
+R2 - Number of matches played this season
+Using the RDFa attribute numberOfGames from the stat-box div
+"""
+
+def getNumberOfMatchesPlayedThisSeason():
+    url = f"{BASE_RDFA_DIR}/statistiques_enrichi.html"
+
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
+        
+    # No RDFa attribute for this
+    boxes = soup.find_all("div", class_="stat-box")
+    if not boxes:
+        return None
+    first_box = boxes[0]
+    for p in first_box.find_all("p"):
+        if "Nombre total de matchs" in p.get_text():
+            nb = _extract_first_int(p.get_text())
+            return str(nb) if nb is not None else None
+    return None
+
+
 # Réponse R3
 def getNumberOfGoals():
     url = f"{BASE_RDFA_DIR}/statistiques_enrichi.html"
