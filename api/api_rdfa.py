@@ -26,7 +26,7 @@ def read_request(request_question: str):
         {
             'keywords': ['matchs', 'joués', 'saison'],
             'title': "Question 2",
-            'answer': web3Engine.getNumberOfMatchesPlayedThisSeason
+            'answer': rdfaEngine.getNumberOfMatchesPlayedThisSeason
         },
         {
             'keywords': ['nombre', 'total', 'buts', 'saison'],
