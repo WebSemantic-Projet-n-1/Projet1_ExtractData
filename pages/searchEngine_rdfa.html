@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>🦝 - Search Engine Web 3.0</title>
+    <title>🦝 - Search Engine RDFa</title>
 
     <style>
         * {
@@ -350,7 +350,7 @@
         <div class="search-info" id="searchInfo" style="display: none;">
             <p class="search-time">
                 Environ <strong id="resultCount">0</strong> résultats
-                (temps de recherche : <strong id="searchTime">0.00</strong> secondes)
+                (temps d'affichage : <strong id="searchTime">0.00</strong> ms - temps de traitement : <strong id="serverTime">0.00</strong> ms)
             </p>
         </div>
 
@@ -373,6 +373,7 @@
         var searchInfo = document.getElementById('searchInfo');
         var resultCountEl = document.getElementById('resultCount');
         var searchTimeEl = document.getElementById('searchTime');
+        var serverTimeEl = document.getElementById('serverTime');
 
         function escapeHtml(text) {
             if (text == null) return '';
@@ -415,7 +416,7 @@
             if (!query) return;
 
             var start = performance.now();
-            var url = '/api/v3/' + encodeURIComponent(query);
+            var url = '/api/rdfa/' + encodeURIComponent(query);
 
             fetch(url)
                 .then(function (res) {
@@ -423,9 +424,10 @@
                     return res.json();
                 })
                 .then(function (data) {
-                    var elapsed = (performance.now() - start) / 1000;
+                    var elapsed = (performance.now() - start);
                     resultCountEl.textContent = data.datas ? data.datas.length : 0;
                     searchTimeEl.textContent = elapsed.toFixed(2);
+                    serverTimeEl.textContent = data.processing_ms;
                     searchInfo.style.display = 'flex';
                     renderResults(data.datas);
                 })
@@ -433,6 +435,7 @@
                     searchInfo.style.display = 'flex';
                     resultCountEl.textContent = '0';
                     searchTimeEl.textContent = '0.00';
+                    serverTimeEl.textContent = '0.00';
                     showError('Impossible de joindre l\'API. ' + err.message);
                 });
         });

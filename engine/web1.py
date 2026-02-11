@@ -6,6 +6,8 @@ Script that contains the functions to respond to the 12 questions/requests
 
 import engine.engine_utils as searchUtils
 
+BASE_WEB1_DIR = "web_1.0_output"
+
 # Teams ("equipe_*.html" files)
 EQUIPE_FILES = [
     'equipe_Arsenal.html',
@@ -22,7 +24,7 @@ EQUIPE_FILES = [
 
 # Réponse R1
 def getFirstTeamInClassment():
-    url = 'web_1.0_output/classement.html'
+    url = BASE_WEB1_DIR + '/classement.html'
 
     soup = searchUtils.getContentByUrl(url)
 
@@ -39,7 +41,7 @@ def getFirstTeamInClassment():
 
 # Réponse R2
 def getNumberOfMatchesPlayedThisSeason():
-    url = 'web_1.0_output/statistiques.html'
+    url = BASE_WEB1_DIR + '/statistiques.html'
 
     soup = searchUtils.getContentByUrl(url)
 
@@ -59,7 +61,7 @@ def getNumberOfMatchesPlayedThisSeason():
 
 # Réponse R3
 def getNumberOfGoals():
-    url = 'web_1.0_output/statistiques.html'
+    url = BASE_WEB1_DIR + '/statistiques.html'
 
     soup = searchUtils.getContentByUrl(url)
 
@@ -79,7 +81,7 @@ def getNumberOfGoals():
 
 # Réponse R4
 def getTeamWithMostGoals():
-    url = 'web_1.0_output/statistiques.html'
+    url = BASE_WEB1_DIR + '/statistiques.html'
     soup = searchUtils.getContentByUrl(url)
     if soup is None:
         return None
@@ -101,7 +103,7 @@ def getTeamWithMostGoals():
 
 # Réponse R5
 def getTeamsOver70Goals():
-    url = 'web_1.0_output/classement.html'
+    url = BASE_WEB1_DIR + '/classement.html'
     soup = searchUtils.getContentByUrl(url)
     if soup is None:
         return None
@@ -135,7 +137,7 @@ def getTeamsOver70Goals():
 
 # Réponse R6
 def getMatchesNovember2008():
-    url = 'web_1.0_output/calendrier.html'
+    url = BASE_WEB1_DIR + '/calendrier.html'
     soup = searchUtils.getContentByUrl(url)
     if soup is None:
         return []
@@ -158,7 +160,7 @@ def getMatchesNovember2008():
 
 # Réponse R7
 def getManchesterUnitedHomeWins():
-    url = 'web_1.0_output/equipe_Manchester_United.html'
+    url = BASE_WEB1_DIR + '/equipe_Manchester_United.html'
     soup = searchUtils.getContentByUrl(url)
     if soup is None:
         return None
@@ -172,7 +174,7 @@ def getManchesterUnitedHomeWins():
 
 # Réponse R8
 def getRankingByAwayWins():
-    base = 'web_1.0_output'
+    base = BASE_WEB1_DIR
     results = []
     for filename in EQUIPE_FILES:
         path = base + '/' + filename
@@ -192,7 +194,7 @@ def getRankingByAwayWins():
     return [f"{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
 def getTop6Teams():
-    url = 'web_1.0_output/classement.html'
+    url = BASE_WEB1_DIR + '/classement.html'
     soup = searchUtils.getContentByUrl(url)
     if soup is None:
         return []
@@ -212,7 +214,7 @@ def getTop6Teams():
 # Réponse R9
 def getAwayGoalsForTop6():
     top6 = getTop6Teams()
-    url = 'web_1.0_output/calendrier.html'
+    url = BASE_WEB1_DIR + '/calendrier.html'
     soup = searchUtils.getContentByUrl(url)
     if soup is None:
         return ''
@@ -247,7 +249,7 @@ def getAwayGoalsForTop6():
 
 
 def getConfrontationsFirstVsThird():
-    url_rank = 'web_1.0_output/classement.html'
+    url_rank = BASE_WEB1_DIR + '/classement.html'
     soup_rank = searchUtils.getContentByUrl(url_rank)
     if soup_rank is None:
         return "Erreur : classement introuvable."

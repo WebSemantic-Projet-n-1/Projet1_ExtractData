@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-import engine.web1.engine as searchEngine
+import engine.rdfa as rdfaEngine
 import unicodedata
+import time
 
 # Normalizes text (accents, case, etc.)
 def normalize(text: str) -> str:
@@ -11,67 +12,64 @@ def normalize(text: str) -> str:
 
 router = APIRouter()
 
-@router.get("/api/v1/{request_question}")
+@router.get("/api/rdfa/{request_question}")
 def read_request(request_question: str):
-
+    t0 = time.perf_counter()
     datas = []
 
-    # region Rules
-    # List of rule definitions with function references (not calls, that's important for benchmark)
     rules = [
         {
             'keywords': ['première', 'classement'],
             'title': "Question 1",
-            'answer': searchEngine.getFirstTeamInClassment
+            'answer': rdfaEngine.getFirstTeamInClassment
         },
         {
             'keywords': ['matchs', 'joués', 'saison'],
             'title': "Question 2",
-            'answer': searchEngine.getNumberOfMatchesPlayedThisSeason
+            'answer': rdfaEngine.getNumberOfMatchesPlayedThisSeason
         },
         {
             'keywords': ['nombre', 'total', 'buts', 'saison'],
             'title': "Question 3",
-            'answer': searchEngine.getNumberOfGoals
+            'answer': rdfaEngine.getNumberOfGoals
         },
         {
             'keywords': ['équipe', 'marqué', 'le plus de buts'],
             'title': "Question 4",
-            'answer': searchEngine.getTeamWithMostGoals
+            'answer': rdfaEngine.getTeamWithMostGoals
         },
         {
             'keywords': ['équipes', 'marqué', 'plus de 70 buts', 'saison'],
             'title': "Question 5",
-            'answer': searchEngine.getTeamsOver70Goals
+            'answer': "Réponse 5"
         },
         {
             'keywords': ['matchs', 'novembre 2008'],
             'title': "Question 6",
-            'answer': searchEngine.getMatchesNovember2008
+            'answer': "Réponse 6"
         },
         {
             'keywords': ['victoires', 'domicile', 'Manchester', 'United'],
             'title': "Question 7",
-            'answer': searchEngine.getManchesterUnitedHomeWins
+            'answer': "Réponse 7"
         },
         {
             'keywords': ['classement', 'équipes', 'nombre', 'victoires', 'extérieur'],
             'title': "Question 8",
-            'answer': searchEngine.getRankingByAwayWins
+            'answer': "Réponse 8"
         },
         {
             'keywords': ['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'],
             'title': "Question 9",
-            'answer': searchEngine.getAwayGoalsForTop6
+            'answer': "Réponse 9"
         },
         {
             'keywords': ['confrontations', 'historiques', 'championnat'],
             'title': "Question 10",
-            'answer': searchEngine.getConfrontationsFirstVsThird
+            'answer': "Réponse 10"
         },
     ]
-    # endregion
-
+   
     # Normalize rule & request
     rules_normalized = [{
         'keywords': [normalize(w) for w in rule['keywords']],
@@ -89,8 +87,11 @@ def read_request(request_question: str):
     if matches:
         max_keywords = max(m[0] for m in matches)
         datas = [{"title": m[1], "answer": m[2]()} for m in matches if m[0] == max_keywords]
+    
+    elapsed_ms = (time.perf_counter() - t0) * 1000
 
     return {
         "request_question": request_normalized,
         "datas": datas,
+        "processing_ms": round(elapsed_ms, 2),
     }

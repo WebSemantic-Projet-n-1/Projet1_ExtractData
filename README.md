@@ -29,6 +29,8 @@ It consists of three search engines that crawl different HTML pages about the 20
 3. Once in the venv, install the requirements `pip install -r requirements.txt`.
 
 4. Download the dataset [on Kaggle](https://www.kaggle.com/code/alaasedeeq/european-soccer-database-with-sqlite3/input) and rename the downloaded file to `database.sqlite`, then place it at the project root.
+ - cURL commant: `curl -L -o soccer.zip https://www.kaggle.com/api/v1/datasets/download/hugomathien/soccer`
+ - unzip the file `unzip soccer.zip`
 
 5. Generate the HTML pages : 
 - `python ./build/generate_html_pages.py`
