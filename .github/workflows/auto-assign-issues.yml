@@ -2,20 +2,17 @@ name: Auto Assign
 on:
   issues:
     types: [opened]
-  pull_request:
-    types: [opened]
 jobs:
-  run:
+  pull-request:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      pull-requests: write
     steps:
     - name: "Auto-assign issue"
       uses: pozil/auto-assign-issue@v1
       with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: T4rg3n, kiloutyg, AlexBOYERE
-          numOfAssignee: 2
+          numOfAssignee: 1
           abortIfPreviousAssignees: true
           allowSelfAssign: true

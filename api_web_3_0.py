@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 import engine.web3.engine as web3Engine
 import unicodedata
+import time
 
 # Normalizes text (accents, case, etc.)
 def normalize(text: str) -> str:
@@ -13,6 +14,7 @@ router = APIRouter()
 
 @router.get("/api/v3/{request_question}")
 def read_request(request_question: str):
+    t0 = time.perf_counter()
     datas = []
 
     rules = [
@@ -24,7 +26,7 @@ def read_request(request_question: str):
         {
             'keywords': ['matchs', 'joués', 'saison'],
             'title': "Question 2",
-            'answer': "Réponse 2"
+            'answer': web3Engine.getNumberOfMatchesPlayedThisSeason
         },
         {
             'keywords': ['nombre', 'total', 'buts', 'saison'],
@@ -85,8 +87,11 @@ def read_request(request_question: str):
     if matches:
         max_keywords = max(m[0] for m in matches)
         datas = [{"title": m[1], "answer": m[2]()} for m in matches if m[0] == max_keywords]
+    
+    elapsed_ms = (time.perf_counter() - t0) * 1000
 
     return {
         "request_question": request_normalized,
         "datas": datas,
+        "processing_ms": round(elapsed_ms, 2),
     }
