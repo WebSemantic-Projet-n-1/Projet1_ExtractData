@@ -4,10 +4,13 @@ RDF SEARCH ENGINE
 Exploits RDFa markup in enriched HTML to answer requests.
 """
 
-import engine.engine_utils as utils
+from pathlib import Path
 import re
 
-BASE_RDFA_DIR = "web_3.0_rdfa_output"
+import engine.engine_utils as utils
+
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+BASE_RDFA_DIR = str(_PROJECT_ROOT / "web_3.0_rdfa_output")
 
 EQUIPE_FILES = [
     "equipe_Arsenal_enrichi.html",

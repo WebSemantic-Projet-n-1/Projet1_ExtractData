@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
-from api_web_1_0 import router as api_web_1_0_router
-from api_web_3_0 import router as api_web_3_0_router
+from api.api_web_1 import router as api_web_1_0_router
+from api.api_rdfa import router as api_rdfa_router
 
 app = FastAPI()
 
@@ -18,10 +18,10 @@ async def v1():
 # API Web 1.0
 app.include_router(api_web_1_0_router)
 
-# Search Engine Web 3.0
-@app.get("/web-3.0/")
+# Search Engine RDFa
+@app.get("/rdfa/")
 async def v2():
-    return FileResponse("pages/searchEngine_web-3.0.html")
+    return FileResponse("pages/searchEngine_rdfa.html")
 
-# API Web 3.0
-app.include_router(api_web_3_0_router)
+# API RDFa
+app.include_router(api_rdfa_router)

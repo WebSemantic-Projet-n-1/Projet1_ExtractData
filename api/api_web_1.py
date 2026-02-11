@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-import engine.web3.engine as web3Engine
+import engine.web1 as web1Engine
 import unicodedata
 
 # Normalizes text (accents, case, etc.)
@@ -11,63 +11,67 @@ def normalize(text: str) -> str:
 
 router = APIRouter()
 
-@router.get("/api/v3/{request_question}")
+@router.get("/api/v1/{request_question}")
 def read_request(request_question: str):
+
     datas = []
 
+    # region Rules
+    # List of rule definitions with function references (not calls, that's important for benchmark)
     rules = [
         {
             'keywords': ['première', 'classement'],
             'title': "Question 1",
-            'answer': web3Engine.getFirstTeamInClassment
+            'answer': web1Engine.getFirstTeamInClassment
         },
         {
             'keywords': ['matchs', 'joués', 'saison'],
             'title': "Question 2",
-            'answer': "Réponse 2"
+            'answer': web1Engine.getNumberOfMatchesPlayedThisSeason
         },
         {
             'keywords': ['nombre', 'total', 'buts', 'saison'],
             'title': "Question 3",
-            'answer': web3Engine.getNumberOfGoals
+            'answer': web1Engine.getNumberOfGoals
         },
         {
             'keywords': ['équipe', 'marqué', 'le plus de buts'],
             'title': "Question 4",
-            'answer': web3Engine.getTeamWithMostGoals
+            'answer': web1Engine.getTeamWithMostGoals
         },
         {
             'keywords': ['équipes', 'marqué', 'plus de 70 buts', 'saison'],
             'title': "Question 5",
-            'answer': "Réponse 5"
+            'answer': web1Engine.getTeamsOver70Goals
         },
         {
             'keywords': ['matchs', 'novembre 2008'],
             'title': "Question 6",
-            'answer': "Réponse 6"
+            'answer': web1Engine.getMatchesNovember2008
         },
         {
             'keywords': ['victoires', 'domicile', 'Manchester', 'United'],
             'title': "Question 7",
-            'answer': "Réponse 7"
+            'answer': web1Engine.getManchesterUnitedHomeWins
         },
         {
             'keywords': ['classement', 'équipes', 'nombre', 'victoires', 'extérieur'],
             'title': "Question 8",
-            'answer': "Réponse 8"
+            'answer': web1Engine.getRankingByAwayWins
         },
         {
             'keywords': ['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'],
             'title': "Question 9",
-            'answer': "Réponse 9"
+            'answer': web1Engine.getAwayGoalsForTop6
         },
         {
             'keywords': ['confrontations', 'historiques', 'championnat'],
             'title': "Question 10",
-            'answer': "Réponse 10"
+            'answer': web1Engine.getConfrontationsFirstVsThird
         },
     ]
-   
+    # endregion
+
     # Normalize rule & request
     rules_normalized = [{
         'keywords': [normalize(w) for w in rule['keywords']],

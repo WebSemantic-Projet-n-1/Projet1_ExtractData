@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>🦝 - Search Engine Web 3.0</title>
+    <title>🦝 - Search Engine RDFa</title>
 
     <style>
         * {
@@ -415,7 +415,7 @@
             if (!query) return;
 
             var start = performance.now();
-            var url = '/api/v3/' + encodeURIComponent(query);
+            var url = '/api/rdfa/' + encodeURIComponent(query);
 
             fetch(url)
                 .then(function (res) {
