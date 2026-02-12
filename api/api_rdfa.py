@@ -61,7 +61,7 @@ def read_request(request_question: str):
         {
             'keywords': ['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'],
             'title': "Question 9",
-            'answer': "Réponse 9"
+            'answer': rdfaEngine.getAwayGoalsForTop6
         },
         {
             'keywords': ['confrontations', 'historiques', 'championnat'],

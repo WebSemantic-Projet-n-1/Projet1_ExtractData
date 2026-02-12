@@ -29,6 +29,15 @@ def _extract_first_int(text):
     m = re.search(r"(\d+)", text)
     return int(m.group(1)) if m else None
 
+def _parse_score(score_text):
+    """Parse 'x - y' into (x, y)."""
+    if not score_text:
+        return None
+    m = re.search(r"(\d+)\s*-\s*(\d+)", score_text)
+    if not m:
+        return None
+    return int(m.group(1)), int(m.group(2))
+
 # Request R1: first team in classement using RDFa
 def getFirstTeamInClassment():
     url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
@@ -170,3 +179,62 @@ def getManchesterUnitedHomeWins():
         if "Domicile" in text and "Victoire" in text:
             count += 1
     return count
+
+
+def _getTop6Teams():
+    url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return []
+
+    rows = soup.find_all("tr", attrs={"typeof": "SportsTeam"})
+    teams = []
+    for row in rows[:6]:
+        name_cell = row.find(attrs={"property": "name"})
+        if name_cell is None:
+            continue
+        teams.append(name_cell.get_text(strip=True))
+    return teams
+
+
+# Réponse R9
+def getAwayGoalsForTop6():
+    top6 = _getTop6Teams()
+    if not top6:
+        return ""
+
+    url = f"{BASE_RDFA_DIR}/calendrier_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return ""
+
+    away_goals = {team: 0 for team in top6}
+
+    for row in soup.find_all("tr", attrs={"typeof": "SportsEvent"}):
+        away_el = row.find(attrs={"property": "awayTeam"})
+        score_el = row.find(attrs={"property": "score"})
+        if away_el is None or score_el is None:
+            continue
+
+        away = away_el.get_text(strip=True)
+        if away not in away_goals:
+            continue
+
+        score = score_el.get_text(strip=True)
+        parsed = _parse_score(score)
+        if not parsed:
+            continue
+        _, away_nb = parsed
+        away_goals[away] += away_nb
+
+    avg = sum(away_goals.values()) / len(top6)
+
+    result_lines = [
+        "Buts marqués à l'extérieur par les équipes du Top 6 :",
+        f"Moyenne (sur 6 équipes) : {avg:.2f} buts",
+    ]
+    for team, goals in away_goals.items():
+        result_lines.append(f"{team} : {goals} buts")
+
+    return "\n".join(result_lines)
+
