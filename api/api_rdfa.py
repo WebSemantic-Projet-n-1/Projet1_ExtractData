@@ -49,7 +49,7 @@ def read_request(request_question: str):
         {
             'keywords': ['classement', 'équipes', 'nombre', 'victoires', 'extérieur'],
             'title': "Question 8",
-            'answer': "Réponse 8"
+            'answer': rdfaEngine.getRankingByAwayWins
         },
         {
             'keywords': ['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'],
