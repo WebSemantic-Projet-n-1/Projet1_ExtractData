@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦝 - Search Engine Web 1.0</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Top navigation indicator */
+        .page-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .page-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .page-btn.active {
+            background: white;
+            color: #1e3c72;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #ff8c00;
+            font-size: 3.5em;
+            font-weight: 700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 50px;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.2s;
+        }
+
+        .search-box:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            padding: 12px 15px;
+            background: transparent;
+        }
+
+        .search-box button {
+            background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-box button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .search-box button:active {
+            transform: scale(0.98);
+        }
+
+        .search-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-time {
+            color: #1e3c72;
+            font-size: 0.95em;
+        }
+
+        .search-time strong {
+            color: #ff8c00;
+            font-weight: 600;
+        }
+
+        .results-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            min-height: 300px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            padding: 60px 20px;
+        }
+
+        .no-results-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .result-item {
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #ff8c00;
+        }
+
+        .result-item h3 {
+            color: #1e3c72;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .result-item p {
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .search-error {
+            text-align: center;
+            color: #c0392b;
+            padding: 20px;
+            background: #fadbd8;
+            border-radius: 10px;
+        }
+
+        /* Side navigation buttons */
+        .nav-btn {
+            position: fixed;
+            top: 10%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid white;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            z-index: 1000;
+        }
+        
+        .nav-btn:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .nav-btn.left {
+            left: 20px;
+        }
+        
+        .nav-btn.right {
+            right: 20px;
+        }
+        
+        .nav-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page indicator buttons at top -->
+    <div class="page-indicator">
+        <button class="page-btn active" onclick="window.location.href='/web-1.0'">1</button>
+        <button class="page-btn" onclick="window.location.href='/rdfa'">2</button>
+        <button class="page-btn" onclick="window.location.href='/knowledge-graph'">3</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Search Engine Web 1.0</h1>
+        </header>
+
+        <form id="searchForm" class="search-box" aria-label="Recherche">
+            <input type="text" name="q" placeholder="Rechercher sur le web..." id="searchInput" autocomplete="off">
+            <button type="submit">Rechercher</button>
+        </form>
+
+        <div class="search-info" id="searchInfo" style="display: none;">
+            <p class="search-time">Environ <strong id="resultCount">0</strong> résultats (temps de traitement : <strong id="serverTime">0.00</strong> ms)</p>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <div class="no-results" id="noResultsPlaceholder">
+                <div class="no-results-icon">🔍</div>
+                <p>Entrez votre recherche ci-dessus pour commencer</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Left button (disabled on first page) -->
+    <div class="nav-btn left disabled">&lt;</div>
+    
+    <!-- Right button -->
+    <a href="/rdfa" class="nav-btn right">&gt;</a>
+
+    <script>
+        (function () {
+            var form = document.getElementById('searchForm');
+            var searchInput = document.getElementById('searchInput');
+            var resultsContainer = document.getElementById('resultsContainer');
+            var searchInfo = document.getElementById('searchInfo');
+            var resultCountEl = document.getElementById('resultCount');
+            var serverTimeEl = document.getElementById('serverTime');
+
+            function escapeHtml(text) {
+                if (text == null) return '';
+                var div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function showNoResults(message) {
+                resultsContainer.innerHTML =
+                    '<div class="no-results" id="noResultsPlaceholder">' +
+                    '<div class="no-results-icon">🔍</div>' +
+                    '<p>' + escapeHtml(message) + '</p>' +
+                    '</div>';
+            }
+
+            function showError(message) {
+                resultsContainer.innerHTML = '<div class="search-error">' + escapeHtml(message) + '</div>';
+            }
+
+            function renderResults(datas) {
+                if (!datas || datas.length === 0) {
+                    showNoResults('Aucun résultat pour cette recherche.');
+                    return;
+                }
+                var html = '';
+                for (var i = 0; i < datas.length; i++) {
+                    var item = datas[i];
+                    html += '<div class="result-item">' +
+                        '<h3>' + escapeHtml(item.title) + '</h3>' +
+                        '<p>' + escapeHtml(String(item.answer)) + '</p>' +
+                        '</div>';
+                }
+                resultsContainer.innerHTML = html;
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var query = searchInput.value.trim();
+                if (!query) return;
+
+                var url = '/api/v1/' + encodeURIComponent(query);
+
+                fetch(url)
+                    .then(function (res) {
+                        if (!res.ok) throw new Error('Erreur ' + res.status);
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        resultCountEl.textContent = data.datas ? data.datas.length : 0;
+                        serverTimeEl.textContent = data.processing_ms;
+                        searchInfo.style.display = 'block';
+                        renderResults(data.datas);
+                    })
+                    .catch(function (err) {
+                        searchInfo.style.display = 'block';
+                        resultCountEl.textContent = '0';
+                        serverTimeEl.textContent = '0.00';
+                        showError('Impossible de joindre l\'API. ' + err.message);
+                    });
+            });
+        })();
+    </script>
+</body>
+</html>
