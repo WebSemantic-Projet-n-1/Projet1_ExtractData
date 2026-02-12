@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from api.api_web_1 import router as api_web_1_0_router
 from api.api_rdfa import router as api_rdfa_router
+from api.api_knowledge_graph import router as api_knowledge_graph_router
 
 app = FastAPI()
 
@@ -25,3 +26,11 @@ async def v2():
 
 # API RDFa
 app.include_router(api_rdfa_router)
+
+# Search Engine Knowledge Graph
+@app.get("/knowledge-graph/")
+async def v3():
+    return FileResponse("pages/searchEngine_knowledge-graph.html")
+
+# API Knowledge Graph
+app.include_router(api_knowledge_graph_router)
