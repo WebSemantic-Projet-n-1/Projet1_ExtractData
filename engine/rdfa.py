@@ -67,7 +67,6 @@ def getFirstTeamInClassment():
 R2 - Number of matches played this season
 Using the RDFa attribute numberOfGames from the stat-box div
 """
-
 def getNumberOfMatchesPlayedThisSeason():
     url = f"{BASE_RDFA_DIR}/statistiques_enrichi.html"
 
@@ -238,3 +237,74 @@ def getAwayGoalsForTop6():
 
     return "\n".join(result_lines)
 
+
+# Réponse R10
+def getConfrontationsFirstVsThird():
+    url_rank = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup_rank = utils.getContentByUrl(url_rank)
+    if not soup_rank:
+        return "Erreur : classement introuvable."
+
+    rows = soup_rank.find_all("tr", attrs={"typeof": "SportsTeam"})
+    if len(rows) < 3:
+        return "Erreur : classement incomplet."
+
+    first_team_cell = rows[0].find(attrs={"property": "name"})
+    third_team_cell = rows[2].find(attrs={"property": "name"})
+    if first_team_cell is None or third_team_cell is None:
+        return "Erreur : équipes introuvables."
+
+    first_team = first_team_cell.get_text(strip=True)
+    third_team = third_team_cell.get_text(strip=True)
+
+    url_cal = f"{BASE_RDFA_DIR}/calendrier_enrichi.html"
+    soup_cal = utils.getContentByUrl(url_cal)
+    if not soup_cal:
+        return "Erreur : calendrier introuvable."
+
+    confrontations = []
+
+    for row in soup_cal.find_all("tr", attrs={"typeof": "SportsEvent"}):
+        date_el = row.find(attrs={"property": "startDate"})
+        home_el = row.find(attrs={"property": "homeTeam"})
+        score_el = row.find(attrs={"property": "score"})
+        away_el = row.find(attrs={"property": "awayTeam"})
+        if not date_el or not home_el or not score_el or not away_el:
+            continue
+
+        date = date_el.get_text(strip=True)
+        home = home_el.get_text(strip=True)
+        score = score_el.get_text(strip=True)
+        away = away_el.get_text(strip=True)
+
+        teams = {home, away}
+        if first_team not in teams or third_team not in teams:
+            continue
+
+        parsed = _parse_score(score)
+        if not parsed:
+            result = "Score invalide"
+        else:
+            home_goals, away_goals = parsed
+            if home == first_team:
+                if home_goals > away_goals:
+                    result = "Victoire du premier"
+                elif home_goals < away_goals:
+                    result = "Défaite du premier"
+                else:
+                    result = "Match nul"
+            else:
+                # first_team is away
+                if away_goals > home_goals:
+                    result = "Victoire du premier"
+                elif away_goals < home_goals:
+                    result = "Défaite du premier"
+                else:
+                    result = "Match nul"
+
+        confrontations.append(f"{date} | {home} | {score} | {away} | {result}")
+
+    if not confrontations:
+        return f"Aucune confrontation trouvée entre {first_team} et {third_team}."
+
+    return "\n".join(confrontations)
