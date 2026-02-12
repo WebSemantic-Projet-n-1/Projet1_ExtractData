@@ -30,6 +30,6 @@ def getFirstTeamInClassment():
     results = g.query(query)
     
     for row in results:
-       return row.teamName
+        return row.teamName
     
     return None
