@@ -51,7 +51,7 @@ def read_request(request_question: str):
         {
             'keywords': ['victoires', 'domicile', 'Manchester', 'United'],
             'title': "Question 7",
-            'answer': "Réponse 7"
+            'answer': rdfaEngine.getManchesterUnitedHomeWins
         },
         {
             'keywords': ['classement', 'équipes', 'nombre', 'victoires', 'extérieur'],

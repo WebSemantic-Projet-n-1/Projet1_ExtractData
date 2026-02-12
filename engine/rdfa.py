@@ -128,3 +128,17 @@ def getTeamWithMostGoals():
         return f"{best_team} ({best_goals} buts)"
     return None
 
+# Réponse R7
+def getManchesterUnitedHomeWins():
+    url = f"{BASE_RDFA_DIR}/equipe_Manchester_United_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
+
+    divs = utils.getMatchResultDivs(soup)
+    count = 0
+    for div in divs:
+        text = div.get_text()
+        if "Domicile" in text and "Victoire" in text:
+            count += 1
+    return count
