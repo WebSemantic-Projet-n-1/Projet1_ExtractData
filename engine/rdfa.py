@@ -4,13 +4,11 @@ RDF SEARCH ENGINE
 Exploits RDFa markup in enriched HTML to answer requests.
 """
 
-from pathlib import Path
 import re
 
 import engine.engine_utils as utils
 
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
-BASE_RDFA_DIR = str(_PROJECT_ROOT / "web_3.0_rdfa_output")
+BASE_RDFA_DIR =  "web_3.0_rdfa_output"
 
 EQUIPE_FILES = [
     "equipe_Arsenal_enrichi.html",
@@ -128,6 +126,36 @@ def getTeamWithMostGoals():
         return f"{best_team} ({best_goals} buts)"
     return None
 
+
+# Réponse R6
+def getMatchesNovember2008():
+    url = f"{BASE_RDFA_DIR}/calendrier_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return []
+
+    matches = []
+    for row in soup.find_all("tr", attrs={"typeof": "SportsEvent"}):
+        date_el = row.find(attrs={"property": "startDate"})
+        home_el = row.find(attrs={"property": "homeTeam"})
+        score_el = row.find(attrs={"property": "score"})
+        away_el = row.find(attrs={"property": "awayTeam"})
+
+        if not date_el or not home_el or not score_el or not away_el:
+            continue
+
+        date = date_el.get_text(strip=True)
+        if "/11/2008" not in date:
+            continue
+
+        home = home_el.get_text(strip=True)
+        score = score_el.get_text(strip=True)
+        away = away_el.get_text(strip=True)
+        matches.append(f"{date} | {home} | {score} | {away}")
+
+    return matches
+
+  
 # Réponse R7
 def getManchesterUnitedHomeWins():
     url = f"{BASE_RDFA_DIR}/equipe_Manchester_United_enrichi.html"
