@@ -134,6 +134,37 @@ def getTeamWithMostGoals():
         return f"{best_team} ({best_goals} buts)"
     return None
 
+# Réponse R5
+def getTeamsOver70Goals():
+    url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if soup is None:
+        return None
+
+    rows = soup.find_all("tr", attrs={"typeof": "SportsTeam"})
+    if not rows:
+        return None
+
+    teams = []
+
+    for row in rows:
+        name_el = row.find(attrs={"property": "name"})
+        goals_el = row.find(attrs={"property": "goalsScored"})
+
+        if name_el is None or goals_el is None:
+            continue
+
+        team_name = name_el.get_text(strip=True)
+        goals_text = goals_el.get_text(strip=True)
+
+        goals = _extract_first_int(goals_text)
+        if goals is None:
+            continue
+
+        if goals > 70:
+            teams.append(team_name)
+
+    return teams if teams else None
 
 # Réponse R6
 def getMatchesNovember2008():
