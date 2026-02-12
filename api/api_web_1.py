@@ -1,14 +1,7 @@
 from fastapi import APIRouter
+from api.api_commons import normalize
 import engine.web1 as web1Engine
-import unicodedata
 import time
-
-# Normalizes text (accents, case, etc.)
-def normalize(text: str) -> str:
-    text = text.lower()
-    text = unicodedata.normalize("NFKD", text)
-    text = "".join(c for c in text if not unicodedata.combining(c))
-    return text
 
 router = APIRouter()
 
