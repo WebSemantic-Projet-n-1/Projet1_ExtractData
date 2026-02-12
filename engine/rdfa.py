@@ -210,6 +210,32 @@ def getManchesterUnitedHomeWins():
             count += 1
     return count
 
+# Réponse R8
+def getRankingByAwayWins():
+    results = []
+
+    for filename in EQUIPE_FILES:
+        url = f"{BASE_RDFA_DIR}/{filename}"
+        soup = utils.getContentByUrl(url)
+        if soup is None:
+            continue
+
+        name_el = soup.find(attrs={"property": "name"})
+        team_name = name_el.get_text(strip=True) if name_el else "Inconnu"
+
+        divs = utils.getMatchResultDivs(soup)
+        away_wins = 0
+
+        for d in divs:
+            text = d.get_text()
+            if "Extérieur" in text and "Victoire" in text:
+                away_wins += 1
+
+        results.append((team_name, away_wins))
+
+    results.sort(key=lambda x: x[1], reverse=True)
+
+    return [f" {i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
 def _getTop6Teams():
     url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
