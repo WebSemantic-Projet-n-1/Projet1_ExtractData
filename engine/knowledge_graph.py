@@ -139,6 +139,32 @@ def getTeamsOver70Goals():
     return teams if teams else None
 
 
+
+# Réponse R7
+def getManchesterUnitedHomeWins():
+    """R7 - Manchester United home wins using Knowledge Graph SPARQL query.
+
+    Returns:
+        int: The total number of wins for Manchester United at home.
+    """
+
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    SELECT (COUNT(?event) AS ?numberOfWins)
+    WHERE {
+        ?event a schema1:SportsEvent .
+        ?event schema1:homeTeam ?homeTeam .
+        ?homeTeam schema1:name "Manchester United" .
+        ?event schema1:result ?result .
+        FILTER(?result = "win")
+    }
+    """
+    results = g.query(query)
+    for row in results:
+        return int(row.numberOfWins)
+    return 0
+
+
 def getAwayGoalsForTop6():
     """R9 - Average number of goals scored away by the Top 6 teams using Knowledge Graph SPARQL query.
     
