@@ -24,7 +24,7 @@ It consists of three search engines that crawl different HTML pages about the 20
 
 2. Activate the venv :
 - Windows `.\.venv\Scripts\activate`
-- Unix `source .venv/bin/activate`
+- Unix(Depending on the Shell you use) `source .venv/bin/activate`
 
 3. Once in the venv, install the requirements `pip install -r requirements.txt`.
 
@@ -45,7 +45,7 @@ It consists of three search engines that crawl different HTML pages about the 20
 
 1. Activate the venv (if not already activated) : 
  - Windows `.\.venv\Scripts\activate`
- - Unix `source .venv/bin/activate`
+ - Unix(Depending on the Shell you use)  `source .venv/bin/activate`
 
 2. Run the API `fastapi dev main.py` 
 
