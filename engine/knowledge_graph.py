@@ -83,13 +83,14 @@ def getTeamWithMostGoals():
     """
     query = """
     PREFIX schema1: <http://schema.org/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?teamName ?goals
     WHERE {
         ?sportsTeam a schema1:SportsTeam .
         ?sportsTeam schema1:goalsScored ?goals .
         ?sportsTeam schema1:name ?teamName .
     }
-    ORDER BY DESC(?goals)
+    ORDER BY DESC(xsd:integer(?goals))
     LIMIT 1
     """
     results = g.query(query)
