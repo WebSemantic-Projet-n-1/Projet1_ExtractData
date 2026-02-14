@@ -39,7 +39,7 @@ def read_request(request_question: str):
         {
             'keywords': ['matchs', 'novembre 2008'],
             'title': "Question 6",
-            'answer':  "Réponse 6"
+            'answer':  knowledgeGraphEngine.getMatchesNovember2008
         },
         {
             'keywords': ['victoires', 'domicile', 'Manchester', 'United'],

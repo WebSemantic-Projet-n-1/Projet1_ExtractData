@@ -73,3 +73,39 @@ def getNumberOfGoals():
     for row in results:
         return int(row.numberOfGoals) if row.numberOfGoals else 0
     return 0
+
+def getMatchesNovember2008():
+    """R6 - Matches played in November 2008 using Knowledge Graph SPARQL query.
+
+    Returns:
+        str: A formatted string containing all matches played in November 2008,
+             or a message if no matches found.
+    """
+
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    SELECT ?matchDate ?homeTeamName ?score ?awayTeamName
+    WHERE {
+        ?event a schema1:SportsEvent .
+        ?event schema1:startDate ?matchDate .
+        ?event schema1:score ?score .
+        ?event schema1:homeTeam ?homeTeam .
+        ?event schema1:awayTeam ?awayTeam .
+        ?homeTeam schema1:name ?homeTeamName .
+        ?awayTeam schema1:name ?awayTeamName .
+        FILTER(REGEX(STR(?matchDate), "/11/2008"))
+    }
+    ORDER BY ?matchDate
+    """
+
+    results = g.query(query)
+    matches = []
+    
+    for row in results:
+        match_info = f"{row.matchDate}: {row.homeTeamName} vs {row.awayTeamName} ({row.score})"
+        matches.append(match_info)
+    
+    if matches:
+        return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
+    else:
+        return "Aucun match trouvé en novembre 2008"
