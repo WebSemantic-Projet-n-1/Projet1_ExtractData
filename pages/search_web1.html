@@ -268,6 +268,17 @@
             var resultCountEl = document.getElementById('resultCount');
             var serverTimeEl = document.getElementById('serverTime');
 
+            // Restore search text from sessionStorage on page load
+            var savedQuery = sessionStorage.getItem('searchQuery');
+            if (savedQuery) {
+                searchInput.value = savedQuery;
+            }
+
+            // Save search text to sessionStorage whenever it changes
+            searchInput.addEventListener('input', function () {
+                sessionStorage.setItem('searchQuery', searchInput.value);
+            });
+
             function escapeHtml(text) {
                 if (text == null) return '';
                 var div = document.createElement('div');

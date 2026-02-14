@@ -19,7 +19,7 @@ def read_request(request_question: str):
         {
             'keywords': ['matchs', 'joués', 'saison'],
             'title': "Question 2",
-            'answer': "Réponse 2"
+            'answer': knowledgeGraphEngine.getNumberOfMatchesPlayedThisSeason
         },
         {
             'keywords': ['nombre', 'total', 'buts', 'saison'],

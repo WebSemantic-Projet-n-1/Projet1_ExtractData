@@ -10,12 +10,10 @@ g.parse("knowledge_graph.ttl", format="turtle")
 def getFirstTeamInClassment():
     """R1 - First team in ranking using Knowledge Graph SPARQL query.
 
-    Executes a SPARQL query over the global RDF graph to retrieve the name
-    of the sports team whose position is "1" in the ranking.
-
     Returns:
         str | None: The name of the first-ranked team if found, otherwise None.
     """
+
     query = """
     PREFIX schema1: <http://schema.org/>
     SELECT ?teamName ?position
@@ -33,3 +31,23 @@ def getFirstTeamInClassment():
         return row.teamName
     
     return None
+
+
+def getNumberOfMatchesPlayedThisSeason():
+    """R2 - Number of matches played this season using Knowledge Graph SPARQL query.
+
+    Returns:
+        int: The total count of SportsEvent entries (matches) in the knowledge graph.
+    """
+
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    SELECT (COUNT(?event) AS ?numberOfMatches)
+    WHERE {
+        ?event a schema1:SportsEvent .
+    }
+    """
+    results = g.query(query)
+    for row in results:
+        return int(row.numberOfMatches)
+    return 0
