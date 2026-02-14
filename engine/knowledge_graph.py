@@ -51,3 +51,25 @@ def getNumberOfMatchesPlayedThisSeason():
     for row in results:
         return int(row.numberOfMatches)
     return 0
+
+
+def getNumberOfGoals():
+    """R3 - Number of goals using Knowledge Graph SPARQL query.
+
+    Returns:
+        int: The total count of goals scored by all teams in the knowledge graph.
+    """
+
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT (SUM(xsd:integer(?goals)) AS ?numberOfGoals)
+    WHERE {
+        ?sportsTeam a schema1:SportsTeam .
+        ?sportsTeam schema1:goalsScored ?goals .
+    }
+    """
+    results = g.query(query)
+    for row in results:
+        return int(row.numberOfGoals) if row.numberOfGoals else 0
+    return 0
