@@ -74,6 +74,7 @@ def getNumberOfGoals():
         return int(row.numberOfGoals) if row.numberOfGoals else 0
     return 0
 
+
 def getMatchesNovember2008():
     """R6 - Matches played in November 2008 using Knowledge Graph SPARQL query.
 

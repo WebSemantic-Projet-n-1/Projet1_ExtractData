@@ -241,7 +241,13 @@ def getAwayGoalsForTop6():
         if away in away_goals:
             away_goals[away] += away_goals_nb
 
-    result_lines = ["Buts marqués à l'extérieur par les équipes du Top 6 :"]
+    # Calculate average
+    avg = sum(away_goals.values()) / len(top6) if top6 else 0
+
+    result_lines = [
+        "Buts marqués à l'extérieur par les équipes du Top 6 :",
+        f"Moyenne (sur 6 équipes) : {avg:.2f} buts"
+    ]
     for team, goals in away_goals.items():
         result_lines.append(f"{team} : {goals} buts")
 
