@@ -50,7 +50,7 @@ API_ENDPOINTS = {
 }
 
 
-def benchmark(n_iterations: int = 100):
+def benchmark(n_iterations: int = 30):
     """
     Core benchmarking function.
 
