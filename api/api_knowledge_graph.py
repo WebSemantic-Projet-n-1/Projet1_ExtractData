@@ -34,7 +34,7 @@ def read_request(request_question: str):
         {
             'keywords': ['équipes', 'marqué', 'plus de 70 buts', 'saison'],
             'title': "Question 5",
-            'answer': "Réponse 5"
+            'answer': knowledgeGraphEngine.getTeamsOver70Goals
         },
         {
             'keywords': ['matchs', 'novembre 2008'],

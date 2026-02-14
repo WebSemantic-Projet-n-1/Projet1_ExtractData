@@ -109,3 +109,30 @@ def getMatchesNovember2008():
         return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
     else:
         return "Aucun match trouvé en novembre 2008"
+
+
+
+def getTeamsOver70Goals():
+    """R5 - Teams over 70 goals using Knowledge Graph SPARQL query.
+
+    Returns:
+        str: A formatted string containing all teams with more than 70 goals,
+             or a message if no teams found.
+    """
+
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT ?teamName
+    WHERE {
+        ?sportsTeam a schema1:SportsTeam .
+        ?sportsTeam schema1:goalsScored ?goals .
+        FILTER(xsd:integer(?goals) > 70)
+        ?sportsTeam schema1:name ?teamName .
+    }
+    """
+    results = g.query(query)
+    teams = []
+    for row in results:
+        teams.append(row.teamName)
+    return teams if teams else None
