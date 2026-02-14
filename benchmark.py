@@ -278,7 +278,7 @@ if __name__ == "__main__":
     # Number of times each (method, question) pair is called.
     # 30 is the statistical minimum for meaningful comparison (CLT).
     # Increase to 50–100 for more precise results if time allows.
-    N = 30
+    N = 100
 
     # Total API calls = N × 10 questions × 3 methods
     total_calls = N * len(REQUESTS_QUESTIONS) * len(API_ENDPOINTS)
