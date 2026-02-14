@@ -150,15 +150,19 @@ def getManchesterUnitedHomeWins():
 
     query = """
     PREFIX schema1: <http://schema.org/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (COUNT(?event) AS ?numberOfWins)
     WHERE {
         ?event a schema1:SportsEvent .
         ?event schema1:homeTeam ?homeTeam .
         ?homeTeam schema1:name "Manchester United" .
-        ?event schema1:result ?result .
-        FILTER(?result = "win")
+        ?event schema1:score ?score .
+        BIND(xsd:integer(STRBEFORE(?score, " - ")) AS ?homeGoals)
+        BIND(xsd:integer(STRAFTER(?score, " - ")) AS ?awayGoals)
+        FILTER(?homeGoals > ?awayGoals)
     }
     """
+   
     results = g.query(query)
     for row in results:
         return int(row.numberOfWins)
