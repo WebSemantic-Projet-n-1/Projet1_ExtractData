@@ -29,7 +29,7 @@ def read_request(request_question: str):
         {
             'keywords': ['équipe', 'marqué', 'le plus de buts'],
             'title': "Question 4",
-            'answer': "Réponse 4"
+            'answer': knowledgeGraphEngine.getTeamWithMostGoals
         },
         {
             'keywords': ['équipes', 'marqué', 'plus de 70 buts', 'saison'],

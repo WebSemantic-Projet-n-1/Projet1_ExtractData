@@ -75,6 +75,29 @@ def getNumberOfGoals():
     return 0
 
 
+def getTeamWithMostGoals():
+    """R4 - Team with most goals using Knowledge Graph SPARQL query.
+    
+    Returns:
+        str: The name of the team with most goals, or a message if no team found.
+    """
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    SELECT ?teamName ?goals
+    WHERE {
+        ?sportsTeam a schema1:SportsTeam .
+        ?sportsTeam schema1:goalsScored ?goals .
+        ?sportsTeam schema1:name ?teamName .
+    }
+    ORDER BY DESC(?goals)
+    LIMIT 1
+    """
+    results = g.query(query)
+    for row in results:
+        return f"{row.teamName} ({row.goals} buts)"
+    return "Aucune équipe trouvée"
+
+
 def getMatchesNovember2008():
     """R6 - Matches played in November 2008 using Knowledge Graph SPARQL query.
 
