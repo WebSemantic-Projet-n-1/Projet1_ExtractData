@@ -186,4 +186,4 @@ def getAwayGoalsForTop6():
     for team_name, data in sorted_teams:
         result_lines.append(f"{team_name} : {data['goals']} buts")
     
-    return "\n".join(result_lines)        
+    return "\n".join(result_lines)
