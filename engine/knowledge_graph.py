@@ -132,6 +132,7 @@ def getAwayGoalsForTop6():
         FILTER(xsd:integer(?position) <= 6)
     }
     ORDER BY xsd:integer(?position)
+    LIMIT 6
     """
     
     top6_results = g.query(top6_query)
