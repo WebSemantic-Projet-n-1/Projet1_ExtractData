@@ -198,7 +198,7 @@ def getRankingByAwayWins():
     
     Returns:
         str: A formatted string containing the ranking by away wins,
-             or a message if no ranking found.
+             or None if no ranking found.
     """
     query = """
     PREFIX schema1: <http://schema.org/>
@@ -219,8 +219,8 @@ def getRankingByAwayWins():
 
     results = g.query(query)
     ranking = []
-    for row in results:
-        ranking.append(f"{row.teamName} - {row.awayWins} victoires ")
+    for index, row in enumerate(results):
+        ranking.append(f"{index + 1}.{row.teamName} - {row.awayWins} victoires")
     return ranking if ranking else None
 
 
