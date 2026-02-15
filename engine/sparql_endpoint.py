@@ -30,11 +30,10 @@ def getFirstTeamInClassment():
     }
     LIMIT 1
     """
-    results = g.query(query)
+    results = execute_query(query)
     
-    for row in results:
-        return row.teamName
-    
+    if results["results"]["bindings"]:
+        return results["results"]["bindings"][0]["teamName"]["value"]
     return None
 
 
@@ -52,9 +51,9 @@ def getNumberOfMatchesPlayedThisSeason():
         ?event a schema1:SportsEvent .
     }
     """
-    results = g.query(query)
-    for row in results:
-        return int(row.numberOfMatches)
+    results = execute_query(query)
+    if results["results"]["bindings"]:
+        return int(results["results"]["bindings"][0]["numberOfMatches"]["value"])
     return 0
 
 
@@ -74,9 +73,9 @@ def getNumberOfGoals():
         ?sportsTeam schema1:goalsScored ?goals .
     }
     """
-    results = g.query(query)
-    for row in results:
-        return int(row.numberOfGoals) if row.numberOfGoals else 0
+    results = execute_query(query)
+    if results["results"]["bindings"]:
+        return int(results["results"]["bindings"][0]["numberOfGoals"]["value"])
     return 0
 
 
@@ -98,9 +97,9 @@ def getTeamWithMostGoals():
     ORDER BY DESC(xsd:integer(?goals))
     LIMIT 1
     """
-    results = g.query(query)
-    for row in results:
-        return f"{row.teamName} ({row.goals} buts)"
+    results = execute_query(query)
+    if results["results"]["bindings"]:
+        return f"{results["results"]["bindings"][0]["teamName"]["value"]} ({results["results"]["bindings"][0]["goals"]["value"]} buts)"
     return "Aucune équipe trouvée"
 
 
@@ -123,10 +122,11 @@ def getTeamsOver70Goals():
         ?sportsTeam schema1:name ?teamName .
     }
     """
-    results = g.query(query)
+    results = execute_query(query)
     teams = []
-    for row in results:
-        teams.append(row.teamName)
+    if results["results"]["bindings"]:
+        for row in results["results"]["bindings"]:
+            teams.append(row["teamName"]["value"])
     return teams if teams else None
 
 
@@ -155,18 +155,12 @@ def getMatchesNovember2008():
     ORDER BY ?matchDate
     """
 
-    results = g.query(query)
+    results = execute_query(query)
     matches = []
-    
-    for row in results:
-        match_info = f"{row.matchDate}: {row.homeTeamName} vs {row.awayTeamName} ({row.score})"
-        matches.append(match_info)
-    
-    if matches:
-        return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
-    else:
-        return "Aucun match trouvé en novembre 2008"
-
+    if results["results"]["bindings"]:
+        for row in results["results"]["bindings"]:
+            matches.append(f"\n {row["matchDate"]["value"]}: {row["homeTeamName"]["value"]} vs {row["awayTeamName"]["value"]} ({row["score"]["value"]})")
+    return matches if matches else None
 
 
 # Réponse R7
@@ -192,11 +186,10 @@ def getManchesterUnitedHomeWins():
     }
     """
    
-    results = g.query(query)
-    for row in results:
-        return int(row.numberOfWins)
+    results = execute_query(query)
+    if results["results"]["bindings"]:
+        return int(results["results"]["bindings"][0]["numberOfWins"]["value"])
     return 0
-
 
 
 def getRankingByAwayWins():
@@ -223,10 +216,11 @@ def getRankingByAwayWins():
     ORDER BY DESC(?awayWins)
     """
 
-    results = g.query(query)
+    results = execute_query(query)
     ranking = []
-    for index, row in enumerate(results):
-        ranking.append(f"{index + 1}.{row.teamName} - {row.awayWins} victoires")
+    if results["results"]["bindings"]:
+        for index, row in enumerate(results["results"]["bindings"]):
+            ranking.append(f"\n {index + 1}.{row["teamName"]["value"]} - {row["awayWins"]["value"]} victoires")
     return ranking if ranking else None
 
 
@@ -253,42 +247,41 @@ def getAwayGoalsForTop6():
     LIMIT 6
     """
     
-    top6_results = g.query(top6_query)
+    top6_results = execute_query(top6_query)
     top6_teams = {}
     
-    for row in top6_results:
-        team_name = str(row.teamName)
-        position = int(row.position)
-        top6_teams[team_name] = {"position": position, "goals": 0}
-    
-    if not top6_teams:
-        return "Aucune donnée disponible pour le Top 6"
+    if top6_results["results"]["bindings"]:
+        for row in top6_results["results"]["bindings"]:
+            team_name = str(row["teamName"]["value"])
+            position = int(row["position"]["value"])
+            top6_teams[team_name] = {"position": position, "goals": 0}
     
     # Get matches for each team
-    for team_name in top6_teams.keys():
-        matches_query = f"""
-        PREFIX schema1: <http://schema.org/>
+    if top6_teams:
+        for team_name in top6_teams.keys():
+            matches_query = f"""
+                PREFIX schema1: <http://schema.org/>
+                
+                SELECT ?score
+                WHERE {{
+                    ?event a schema1:SportsEvent .
+                    ?event schema1:awayTeam ?awayTeamNode .
+                    ?awayTeamNode schema1:name "{team_name}" .
+                    ?event schema1:score ?score .
+                }}
+                """
         
-        SELECT ?score
-        WHERE {{
-            ?event a schema1:SportsEvent .
-            ?event schema1:awayTeam ?awayTeamNode .
-            ?awayTeamNode schema1:name "{team_name}" .
-            ?event schema1:score ?score .
-        }}
-        """
-        
-        matches_results = g.query(matches_query)
-        
-        for row in matches_results:
-            score_str = str(row.score)
-            try:
-                parts = score_str.split(' - ')
-                if len(parts) == 2:
-                    away_goals = int(parts[1].strip())
-                    top6_teams[team_name]["goals"] += away_goals
-            except (ValueError, IndexError):
-                continue
+        matches_results = execute_query(matches_query)
+        if matches_results["results"]["bindings"]:
+            for row in matches_results["results"]["bindings"]:
+                score_str = str(row["score"]["value"])
+                try:
+                    parts = score_str.split(' - ')
+                    if len(parts) == 2:
+                        away_goals = int(parts[1].strip())
+                        top6_teams[team_name]["goals"] += away_goals
+                except (ValueError, IndexError):
+                    continue
     
     # Calculate average
     total_goals = sum(team["goals"] for team in top6_teams.values())
@@ -302,8 +295,9 @@ def getAwayGoalsForTop6():
     
     # Sort by position
     sorted_teams = sorted(top6_teams.items(), key=lambda x: x[1]["position"])
-    for team_name, data in sorted_teams:
-        result_lines.append(f"{team_name} : {data['goals']} buts")
+    if sorted_teams:
+        for team_name, data in sorted_teams:
+            result_lines.append(f"\n {team_name} : {data['goals']} buts")
     
     return "\n".join(result_lines)
 
@@ -339,33 +333,34 @@ def getConfrontationsFirstVsThird():
     }
     """
 
-    results = g.query(query)
+    results = execute_query(query)
     confrontations = []
-    for row in results:
-        parts = str(row.score).split(" - ")
-        home_goals = int(parts[0])
-        away_goals = int(parts[1])
+    if results["results"]["bindings"]:
+        for row in results["results"]["bindings"]:
+            parts = str(row["score"]["value"]).split(" - ")
+            home_goals = int(parts[0])
+            away_goals = int(parts[1])
 
-        first_team = str(row.team1Name)
-        home = str(row.homeTeamName)
+            first_team = str(row["team1Name"]["value"])
+            home = str(row["homeTeamName"]["value"])
 
-        if home == first_team:
-            if home_goals > away_goals:
-                conclusion = "Victoire du premier"
-            elif home_goals < away_goals:
-                conclusion = "Défaite du premier"
+            if home == first_team:
+                if home_goals > away_goals:
+                    conclusion = "Victoire du premier"
+                elif home_goals < away_goals:
+                    conclusion = "Défaite du premier"
+                else:
+                    conclusion = "Match nul"
             else:
-                conclusion = "Match nul"
-        else:
-            # first team is away
-            if away_goals > home_goals:
-                conclusion = "Victoire du premier"
-            elif away_goals < home_goals:
-                conclusion = "Défaite du premier"
-            else:
-                conclusion = "Match nul"
+                # first team is away
+                if away_goals > home_goals:
+                    conclusion = "Victoire du premier"
+                elif away_goals < home_goals:
+                    conclusion = "Défaite du premier"
+                else:
+                    conclusion = "Match nul"
 
-        confrontations.append(
-            f"{row.matchDate}: {row.homeTeamName} vs {row.awayTeamName} ({row.score}) - {conclusion}"
-        )
-    return "\n".join(confrontations) if confrontations else None
+            confrontations.append(
+                f"\n {row["matchDate"]["value"]}: {row["homeTeamName"]["value"]} vs {row["awayTeamName"]["value"]} ({row["score"]["value"]}) - {conclusion}"
+            )
+    return confrontations if confrontations else None

@@ -177,7 +177,7 @@ def getManchesterUnitedHomeWins():
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (COUNT(?event) AS ?numberOfWins)
     WHERE {
-        ?event a schema1:SportsEvent .knowledgeGraphEngine
+        ?event a schema1:SportsEvent .
         ?event schema1:homeTeam ?homeTeam .
         ?homeTeam schema1:name "Manchester United" .
         ?event schema1:score ?score .

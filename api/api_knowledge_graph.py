@@ -2,6 +2,15 @@ from fastapi import APIRouter
 from api.api_commons import normalize
 import engine.knowledge_graph as knowledgeGraphEngine
 import time
+# #region agent log
+import json as _json
+_DEBUG_LOG_PATH = "/home/kilo/Work/Cours - UQO/.cursor/debug.log"
+def _dlog(location, message, data=None, hypothesisId=None):
+    import time as _t
+    entry = {"id": f"log_{int(_t.time()*1000)}","timestamp": int(_t.time()*1000),"location": location,"message": message,"data": data or {},"hypothesisId": hypothesisId}
+    with open(_DEBUG_LOG_PATH, "a") as f:
+        f.write(_json.dumps(entry) + "\n")
+# #endregion
 
 router = APIRouter()
 
@@ -76,6 +85,10 @@ def read_request(request_question: str):
         if all(word in request_normalized for word in rule['keywords']):
             matches.append((len(rule['keywords']), rule['title'], rule['answer']))
 
+    # #region agent log
+    _dlog("api_knowledge_graph.py:read_request", "matched rules", {"request_normalized": request_normalized, "matched_titles": [m[1] for m in matches]}, hypothesisId="H4")
+    # #endregion
+
     # Choose the rule with the most keywords
     if matches:
         max_keywords = max(m[0] for m in matches)
@@ -83,6 +96,9 @@ def read_request(request_question: str):
         datas = []
         for m in matches:
             if m[0] == max_keywords:
+                # #region agent log
+                _dlog("api_knowledge_graph.py:read_request", "calling function", {"title": m[1], "func_name": m[2].__name__ if callable(m[2]) else "N/A"}, hypothesisId="H4")
+                # #endregion
                 answer = m[2]() if callable(m[2]) else m[2]
                 datas.append({"title": m[1], "answer": answer})
     

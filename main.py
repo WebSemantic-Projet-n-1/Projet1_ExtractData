@@ -36,7 +36,6 @@ async def v3():
 # API Knowledge Graph
 app.include_router(api_knowledge_graph_router)
 
-
 # Search Engine SPARQL Endpoint
 @app.get("/sparql-endpoint/")
 async def v4():

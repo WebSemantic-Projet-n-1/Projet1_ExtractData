@@ -321,7 +321,7 @@
                 var query = searchInput.value.trim();
                 if (!query) return;
 
-                var url = '/api/knowledge-graph/' + encodeURIComponent(query);
+                var url = '/api/sparql-endpoint/' + encodeURIComponent(query);
 
                 fetch(url)
                     .then(function (res) {
