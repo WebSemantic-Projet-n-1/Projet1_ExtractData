@@ -269,3 +269,46 @@ def getAwayGoalsForTop6():
         result_lines.append(f"{team_name} : {data['goals']} buts")
     
     return "\n".join(result_lines)
+
+
+# Réponse R10
+def getConfrontationsFirstVsThird():
+    """R10 - Confrontations between first and third team using Knowledge Graph SPARQL query.
+    
+    Returns:
+        str: A formatted string containing all confrontations between first and third team,
+            or a message if no confrontations found.
+    """
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    SELECT DISTINCT ?homeTeamName ?awayTeamName ?score ?matchDate
+    WHERE {
+        ?team1 a schema1:SportsTeam .
+        ?team1 schema1:position "1" .
+        ?team1 schema1:name ?team1Name .
+
+        ?team3 a schema1:SportsTeam .
+        ?team3 schema1:position "3" .
+        ?team3 schema1:name ?team3Name .
+
+        ?event a schema1:SportsEvent .
+        ?event schema1:homeTeam ?homeTeam .
+        ?event schema1:awayTeam ?awayTeam .
+        ?event schema1:score ?score .
+        ?event schema1:startDate ?matchDate .
+
+        ?homeTeam schema1:name ?homeTeamName .
+        ?awayTeam schema1:name ?awayTeamName .
+
+        FILTER(
+            (?homeTeamName = ?team1Name && ?awayTeamName = ?team3Name) ||
+            (?homeTeamName = ?team3Name && ?awayTeamName = ?team1Name)
+        )
+    }
+    """
+
+    results = g.query(query)
+    confrontations = []
+    for row in results:
+        confrontations.append(f"{row.matchDate}: {row.homeTeamName} vs {row.awayTeamName} ({row.score})")
+    return "\n".join(confrontations) if confrontations else None
