@@ -273,15 +273,10 @@ def getAwayGoalsForTop6():
 
 # Réponse R10
 def getConfrontationsFirstVsThird():
-    """R10 - Confrontations between first and third team using Knowledge Graph SPARQL query.
-    
-    Returns:
-        str: A formatted string containing all confrontations between first and third team,
-            or a message if no confrontations found.
-    """
+    """R10 - Confrontations between first and third team using Knowledge Graph SPARQL query."""
     query = """
     PREFIX schema1: <http://schema.org/>
-    SELECT DISTINCT ?homeTeamName ?awayTeamName ?score ?matchDate
+    SELECT DISTINCT ?team1Name ?homeTeamName ?awayTeamName ?score ?matchDate
     WHERE {
         ?team1 a schema1:SportsTeam .
         ?team1 schema1:position "1" .
@@ -310,5 +305,30 @@ def getConfrontationsFirstVsThird():
     results = g.query(query)
     confrontations = []
     for row in results:
-        confrontations.append(f"{row.matchDate}: {row.homeTeamName} vs {row.awayTeamName} ({row.score})")
+        parts = str(row.score).split(" - ")
+        home_goals = int(parts[0])
+        away_goals = int(parts[1])
+
+        first_team = str(row.team1Name)
+        home = str(row.homeTeamName)
+
+        if home == first_team:
+            if home_goals > away_goals:
+                conclusion = "Victoire du premier"
+            elif home_goals < away_goals:
+                conclusion = "Défaite du premier"
+            else:
+                conclusion = "Match nul"
+        else:
+            # first team is away
+            if away_goals > home_goals:
+                conclusion = "Victoire du premier"
+            elif away_goals < home_goals:
+                conclusion = "Défaite du premier"
+            else:
+                conclusion = "Match nul"
+
+        confrontations.append(
+            f"{row.matchDate}: {row.homeTeamName} vs {row.awayTeamName} ({row.score}) - {conclusion}"
+        )
     return "\n".join(confrontations) if confrontations else None
