@@ -92,3 +92,44 @@ It consists of three search engines that crawl different HTML pages about the 20
 +---web_3.0_rdfa_output
 |       [...]
 ```
+
+## Bonus : Integrated Benchmark
+
+To compare the performance of the three search engines, you can run the benchmark.py script.
+
+```
+python benchmark.py
+```
+
+This will run the benchmark and output the results in the terminal and in the benchmark_results.csv file.
+
+The benchmark_results.csv file can be opened in a spreadsheet to analyze the results.
+
+## Bonus : SPARQL Endpoint
+
+In the folder ../<project> download the apache-jena-fuseki tar.gz file containing the Fuseki server binary.
+
+Extract the tar.gz file.
+```
+tar -xzf apache-jena-fusek.tar.gz
+```
+
+Start the Fuseki server.
+```
+./fuseki-server --update --mem /soccer
+```
+
+Load the knowledge graph into the Fuseki server.
+```
+   curl -X POST "http://localhost:3030/soccer/data" \
+     -H "Content-Type: text/turtle" \
+     --data-binary @knowledge_graph.ttl
+```
+
+The SPARQL Endpoint is a SPARQL 1.1 compliant endpoint that can be used to query the knowledge graph.
+
+It is hosted at http://localhost:3030/soccer/sparql.
+
+The SPARQL Endpoint is used to query the knowledge graph.
+
+The SPARQL Endpoint is used to query the knowledge graph.

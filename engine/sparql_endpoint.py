@@ -1,11 +1,16 @@
 """
 RDF database operations
 """
+from SPARQLWrapper import SPARQLWrapper, JSON
 
-import rdflib
+SPARQL_ENDPOINT = "http://localhost:3030/soccer/sparql"
 
-g = rdflib.Graph()
-g.parse("knowledge_graph.ttl", format="turtle")
+def execute_query(query):
+    sparql = SPARQLWrapper(SPARQL_ENDPOINT)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    return sparql.query().convert()
+    
 
 def getFirstTeamInClassment():
     """R1 - First team in ranking using Knowledge Graph SPARQL query.
@@ -177,7 +182,7 @@ def getManchesterUnitedHomeWins():
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT (COUNT(?event) AS ?numberOfWins)
     WHERE {
-        ?event a schema1:SportsEvent .knowledgeGraphEngine
+        ?event a schema1:SportsEvent .
         ?event schema1:homeTeam ?homeTeam .
         ?homeTeam schema1:name "Manchester United" .
         ?event schema1:score ?score .

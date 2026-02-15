@@ -1,0 +1,95 @@
+from fastapi import APIRouter
+from api.api_commons import normalize
+import engine.sparql_endpoint as sparqlEndpointEngine
+import time
+
+router = APIRouter()
+
+@router.get("/api/sparql-endpoint/{request_question}")
+def read_request(request_question: str):
+    t0 = time.perf_counter()
+    datas = []
+
+    rules = [
+        {
+            'keywords': ['première', 'classement'],
+            'title': "Question 1",
+            'answer': sparqlEndpointEngine.getFirstTeamInClassment
+        },
+        {
+            'keywords': ['matchs', 'joués', 'saison'],
+            'title': "Question 2",
+            'answer': sparqlEndpointEngine.getNumberOfMatchesPlayedThisSeason
+        },
+        {
+            'keywords': ['nombre', 'total', 'buts', 'saison'],
+            'title': "Question 3",
+            'answer': sparqlEndpointEngine.getNumberOfGoals
+        },
+        {
+            'keywords': ['équipe', 'marqué', 'le plus de buts'],
+            'title': "Question 4",
+            'answer': sparqlEndpointEngine.getTeamWithMostGoals
+        },
+        {
+            'keywords': ['équipes', 'marqué', 'plus de 70 buts', 'saison'],
+            'title': "Question 5",
+            'answer': sparqlEndpointEngine.getTeamsOver70Goals
+        },
+        {
+            'keywords': ['matchs', 'novembre 2008'],
+            'title': "Question 6",
+            'answer':  sparqlEndpointEngine.getMatchesNovember2008
+        },
+        {
+            'keywords': ['victoires', 'domicile', 'Manchester', 'United'],
+            'title': "Question 7",
+            'answer': sparqlEndpointEngine.getManchesterUnitedHomeWins
+        },
+        {
+            'keywords': ['classement', 'équipes', 'nombre', 'victoires', 'extérieur'],
+            'title': "Question 8",
+            'answer': sparqlEndpointEngine.getRankingByAwayWins
+        },
+        {
+            'keywords': ['moyenne', 'buts marqués', 'extérieur', 'équipes', 'top 6'],
+            'title': "Question 9",
+            'answer': sparqlEndpointEngine.getAwayGoalsForTop6
+        },
+        {
+            'keywords': ['confrontations', 'historiques', 'championnat'],
+            'title': "Question 10",
+            'answer': sparqlEndpointEngine.getConfrontationsFirstVsThird
+        },
+    ]
+   
+    # Normalize rule & request
+    rules_normalized = [{
+        'keywords': [normalize(w) for w in rule['keywords']],
+        'title': rule['title'],
+        'answer': rule['answer']
+    } for rule in rules]
+    request_normalized = normalize(request_question)
+
+    matches = []
+    for rule in rules_normalized:
+        if all(word in request_normalized for word in rule['keywords']):
+            matches.append((len(rule['keywords']), rule['title'], rule['answer']))
+
+    # Choose the rule with the most keywords
+    if matches:
+        max_keywords = max(m[0] for m in matches)
+        # Call functions if they are callable, otherwise use string answers
+        datas = []
+        for m in matches:
+            if m[0] == max_keywords:
+                answer = m[2]() if callable(m[2]) else m[2]
+                datas.append({"title": m[1], "answer": answer})
+    
+    elapsed_ms = (time.perf_counter() - t0) * 1000
+
+    return {
+        "request_question": request_normalized,
+        "datas": datas,
+        "processing_ms": round(elapsed_ms, 2),
+    }
