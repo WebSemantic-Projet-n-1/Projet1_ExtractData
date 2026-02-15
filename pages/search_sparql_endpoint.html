@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦝 - Search Engine SPARQL Endpoint</title>
+    <title>🦝 - Search Engine SPARQL from Apache Jena Server</title>
 
     <style>
         * {
@@ -235,7 +235,7 @@
 
     <div class="container">
         <header>
-            <h1>Search Engine SPARQL Endpoint</h1>
+            <h1>Search Engine SPARQL from Apache Jena Server</h1>
         </header>
 
         <form id="searchForm" class="search-box" aria-label="Recherche">
@@ -244,7 +244,10 @@
         </form>
 
         <div class="search-info" id="searchInfo" style="display: none;">
-            <p class="search-time">Environ <strong id="resultCount">0</strong> résultats (temps de traitement : <strong id="serverTime">0.00</strong> ms)</p>
+            <p class="search-time">
+                Environ <strong id="resultCount">0</strong> résultats
+                (temps d'affichage : <strong id="searchTime">0.00</strong> ms - temps de traitement : <strong id="serverTime">0.00</strong> ms)
+            </p>
         </div>
 
         <div class="results-container" id="resultsContainer">
@@ -268,6 +271,7 @@
             var resultsContainer = document.getElementById('resultsContainer');
             var searchInfo = document.getElementById('searchInfo');
             var resultCountEl = document.getElementById('resultCount');
+            var searchTimeEl = document.getElementById('searchTime');
             var serverTimeEl = document.getElementById('serverTime');
 
             // Restore search text from sessionStorage on page load
@@ -318,6 +322,7 @@
 
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
+                var start = performance.now();
                 var query = searchInput.value.trim();
                 if (!query) return;
 
@@ -329,6 +334,8 @@
                         return res.json();
                     })
                     .then(function (data) {
+                        var elapsed = (performance.now() - start);
+                        searchTimeEl.textContent = elapsed.toFixed(2);
                         resultCountEl.textContent = data.datas ? data.datas.length : 0;
                         serverTimeEl.textContent = data.processing_ms;
                         searchInfo.style.display = 'block';
