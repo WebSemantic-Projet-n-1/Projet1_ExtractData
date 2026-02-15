@@ -300,3 +300,66 @@ def getAwayGoalsForTop6():
         result_lines.append(f"{team_name} : {data['goals']} buts")
     
     return "\n".join(result_lines)
+
+
+# Réponse R10
+def getConfrontationsFirstVsThird():
+    """R10 - Confrontations between first and third team using Knowledge Graph SPARQL query."""
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    SELECT DISTINCT ?team1Name ?homeTeamName ?awayTeamName ?score ?matchDate
+    WHERE {
+        ?team1 a schema1:SportsTeam .
+        ?team1 schema1:position "1" .
+        ?team1 schema1:name ?team1Name .
+
+        ?team3 a schema1:SportsTeam .
+        ?team3 schema1:position "3" .
+        ?team3 schema1:name ?team3Name .
+
+        ?event a schema1:SportsEvent .
+        ?event schema1:homeTeam ?homeTeam .
+        ?event schema1:awayTeam ?awayTeam .
+        ?event schema1:score ?score .
+        ?event schema1:startDate ?matchDate .
+
+        ?homeTeam schema1:name ?homeTeamName .
+        ?awayTeam schema1:name ?awayTeamName .
+
+        FILTER(
+            (?homeTeamName = ?team1Name && ?awayTeamName = ?team3Name) ||
+            (?homeTeamName = ?team3Name && ?awayTeamName = ?team1Name)
+        )
+    }
+    """
+
+    results = g.query(query)
+    confrontations = []
+    for row in results:
+        parts = str(row.score).split(" - ")
+        home_goals = int(parts[0])
+        away_goals = int(parts[1])
+
+        first_team = str(row.team1Name)
+        home = str(row.homeTeamName)
+
+        if home == first_team:
+            if home_goals > away_goals:
+                conclusion = "Victoire du premier"
+            elif home_goals < away_goals:
+                conclusion = "Défaite du premier"
+            else:
+                conclusion = "Match nul"
+        else:
+            # first team is away
+            if away_goals > home_goals:
+                conclusion = "Victoire du premier"
+            elif away_goals < home_goals:
+                conclusion = "Défaite du premier"
+            else:
+                conclusion = "Match nul"
+
+        confrontations.append(
+            f"{row.matchDate}: {row.homeTeamName} vs {row.awayTeamName} ({row.score}) - {conclusion}"
+        )
+    return "\n".join(confrontations) if confrontations else None

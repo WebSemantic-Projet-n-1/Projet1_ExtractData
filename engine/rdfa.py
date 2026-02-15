@@ -359,7 +359,7 @@ def getConfrontationsFirstVsThird():
                 else:
                     result = "Match nul"
 
-        confrontations.append(f"{date} | {home} | {score} | {away} | {result}")
+        confrontations.append(f"{date} | {home} | {score} | {away} | {result}" )
 
     if not confrontations:
         return f"Aucune confrontation trouvée entre {first_team} et {third_team}."

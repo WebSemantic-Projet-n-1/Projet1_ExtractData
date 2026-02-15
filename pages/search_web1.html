@@ -308,8 +308,7 @@
                     var item = datas[i];
                     html += '<div class="result-item">' +
                         '<h3>' + escapeHtml(item.title) + '</h3>' +
-                        '<p>' + escapeHtml(String(item.answer)) + '</p>' +
-                        '</div>';
+                        '<p>' + escapeHtml(String(item.answer)).replace(/\n/g, '<br>') + '</p>' +                         '</div>';
                 }
                 resultsContainer.innerHTML = html;
             }

@@ -59,7 +59,7 @@ def read_request(request_question: str):
         {
             'keywords': ['confrontations', 'historiques', 'championnat'],
             'title': "Question 10",
-            'answer': "Réponse 10"
+            'answer': knowledgeGraphEngine.getConfrontationsFirstVsThird
         },
     ]
    
