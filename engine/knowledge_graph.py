@@ -193,6 +193,37 @@ def getManchesterUnitedHomeWins():
     return 0
 
 
+def getRankingByAwayWins():
+    """R8 - Ranking by away wins using Knowledge Graph SPARQL query.
+    
+    Returns:
+        str: A formatted string containing the ranking by away wins,
+             or None if no ranking found.
+    """
+    query = """
+    PREFIX schema1: <http://schema.org/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT ?teamName (COUNT(?event) AS ?awayWins)
+    WHERE {
+        ?event a schema1:SportsEvent .
+        ?event schema1:awayTeam ?awayTeam .
+        ?awayTeam schema1:name ?teamName .
+        ?event schema1:score ?score .
+        BIND(xsd:integer(STRBEFORE(?score, " - ")) AS ?homeGoals)
+        BIND(xsd:integer(STRAFTER(?score, " - ")) AS ?awayGoals)
+        FILTER(?awayGoals > ?homeGoals)
+    }
+    GROUP BY ?teamName
+    ORDER BY DESC(?awayWins)
+    """
+
+    results = g.query(query)
+    ranking = []
+    for index, row in enumerate(results):
+        ranking.append(f"{index + 1}.{row.teamName} - {row.awayWins} victoires")
+    return ranking if ranking else None
+
+
 def getAwayGoalsForTop6():
     """R9 - Average number of goals scored away by the Top 6 teams using Knowledge Graph SPARQL query.
     
