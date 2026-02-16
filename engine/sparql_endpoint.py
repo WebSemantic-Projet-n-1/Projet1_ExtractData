@@ -235,13 +235,12 @@ def getAwayGoalsForTop6():
     top6_query = """
     PREFIX schema1: <http://schema.org/>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    
-    SELECT ?teamName ?position
+    SELECT DISTINCT ?teamName ?position
     WHERE {
         ?team a schema1:SportsTeam .
         ?team schema1:name ?teamName .
         ?team schema1:position ?position .
-        FILTER(xsd:integer(?position) <= 6)
+        FILTER(xsd:integer(?position) < 7)
     }
     ORDER BY xsd:integer(?position)
     LIMIT 6
@@ -260,28 +259,26 @@ def getAwayGoalsForTop6():
     if top6_teams:
         for team_name in top6_teams.keys():
             matches_query = f"""
-                PREFIX schema1: <http://schema.org/>
-                
-                SELECT ?score
-                WHERE {{
-                    ?event a schema1:SportsEvent .
-                    ?event schema1:awayTeam ?awayTeamNode .
-                    ?awayTeamNode schema1:name "{team_name}" .
-                    ?event schema1:score ?score .
-                }}
-                """
-        
-        matches_results = execute_query(matches_query)
-        if matches_results["results"]["bindings"]:
-            for row in matches_results["results"]["bindings"]:
-                score_str = str(row["score"]["value"])
-                try:
-                    parts = score_str.split(' - ')
-                    if len(parts) == 2:
-                        away_goals = int(parts[1].strip())
-                        top6_teams[team_name]["goals"] += away_goals
-                except (ValueError, IndexError):
-                    continue
+            PREFIX schema1: <http://schema.org/>
+            SELECT ?score
+            WHERE {{
+                ?event a schema1:SportsEvent .
+                ?event schema1:awayTeam ?awayTeamNode .
+                ?awayTeamNode schema1:name "{team_name}" .
+                ?event schema1:score ?score .
+            }}
+            """
+            matches_results = execute_query(matches_query)
+            if matches_results["results"]["bindings"]:
+                for row in matches_results["results"]["bindings"]:
+                    score_str = str(row["score"]["value"])
+                    try:
+                        parts = score_str.split(' - ')
+                        if len(parts) == 2:
+                            away_goals = int(parts[1].strip())
+                            top6_teams[team_name]["goals"] += away_goals
+                    except (ValueError, IndexError):
+                        continue
     
     # Calculate average
     total_goals = sum(team["goals"] for team in top6_teams.values())
@@ -297,8 +294,7 @@ def getAwayGoalsForTop6():
     sorted_teams = sorted(top6_teams.items(), key=lambda x: x[1]["position"])
     if sorted_teams:
         for team_name, data in sorted_teams:
-            result_lines.append(f"\n {team_name} : {data['goals']} buts")
-    
+            result_lines.append(f"{team_name} : {data['goals']} buts")
     return "\n".join(result_lines)
 
 

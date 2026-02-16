@@ -236,13 +236,12 @@ def getAwayGoalsForTop6():
     top6_query = """
     PREFIX schema1: <http://schema.org/>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    
-    SELECT ?teamName ?position
+    SELECT DISTINCT ?teamName ?position
     WHERE {
         ?team a schema1:SportsTeam .
         ?team schema1:name ?teamName .
         ?team schema1:position ?position .
-        FILTER(xsd:integer(?position) <= 6)
+        FILTER(xsd:integer(?position) < 7)
     }
     ORDER BY xsd:integer(?position)
     LIMIT 6
@@ -263,7 +262,6 @@ def getAwayGoalsForTop6():
     for team_name in top6_teams.keys():
         matches_query = f"""
         PREFIX schema1: <http://schema.org/>
-        
         SELECT ?score
         WHERE {{
             ?event a schema1:SportsEvent .
