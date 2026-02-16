@@ -109,13 +109,18 @@ The benchmark_results.csv file can be opened in a spreadsheet to analyze the res
 
 In the folder ../<project> download the apache-jena-fuseki tar.gz file containing the Fuseki server binary.
 
+```
+wget https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-6.0.0.tar.gz 
+```
+
 Extract the tar.gz file.
 ```
-tar -xzf apache-jena-fusek.tar.gz
+tar -xzf apache-jena-fuseki-6.0.0.tar.gz
 ```
 
 Start the Fuseki server.
 ```
+cd apache-jena-fuseki-6.0.0
 ./fuseki-server --update --mem /soccer
 ```
 
@@ -129,8 +134,6 @@ Load the knowledge graph into the Fuseki server.
 The SPARQL Endpoint is a SPARQL 1.1 compliant endpoint that can be used to query the knowledge graph.
 
 It is hosted at http://localhost:3030/soccer/sparql.
-
-The SPARQL Endpoint is used to query the knowledge graph.
 
 The SPARQL Endpoint is used to query the knowledge graph.
 
