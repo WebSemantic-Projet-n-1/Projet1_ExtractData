@@ -87,7 +87,7 @@ def benchmark(n_iterations: int = 100, n_warmup: int = 5):
             client_times = []  # Will hold N client-side round-trip ms values
 
             # --- Inner loop: repeat the same call N times ---
-                for i in range(n_warmup + n_iterations):
+            for i in range(n_warmup + n_iterations):
                 # Build the full URL.
                 # quote() encodes special characters: spaces → %20,
                 # accents → %C3%A9, question marks → %3F, etc.
