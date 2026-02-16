@@ -222,7 +222,7 @@ def getRankingByAwayWins():
     ranking = []
     if results["results"]["bindings"]:
         for index, row in enumerate(results["results"]["bindings"]):
-            ranking.append(f"\n {index + 1}.{row["teamName"]["value"]} - {row["awayWins"]["value"]} victoires")
+            ranking.append(f"\n {index + 1}. {row["teamName"]["value"]} - {row["awayWins"]["value"]} victoires")
     return ranking if ranking else None
 
 

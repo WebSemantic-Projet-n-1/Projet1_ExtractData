@@ -221,7 +221,7 @@ def getRankingByAwayWins():
     results = g.query(query)
     ranking = []
     for index, row in enumerate(results):
-        ranking.append(f"{index + 1}.{row.teamName} - {row.awayWins} victoires")
+        ranking.append(f"\n{index + 1}. {row.teamName} - {row.awayWins} victoires")
     return ranking if ranking else None
 
 

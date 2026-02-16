@@ -244,7 +244,7 @@ def getRankingByAwayWins():
 
     results.sort(key=lambda x: x[1], reverse=True)
 
-    return [f" {i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
+    return [f"\n{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
 def _getTop6Teams():
     url = f"{BASE_RDFA_DIR}/classement_enrichi.html"

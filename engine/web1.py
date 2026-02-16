@@ -194,8 +194,11 @@ def getRankingByAwayWins():
                 away_wins += 1
         results.append((team_name, away_wins))
     results.sort(key=lambda x: x[1], reverse=True)
-    return [f"{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
+    return [f"\n{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
+
+
+# Réponse R9
 def getTop6Teams():
     url = BASE_WEB1_DIR + '/classement.html'
     soup = searchUtils.getContentByUrl(url)
@@ -214,7 +217,6 @@ def getTop6Teams():
 
     return teams
 
-# Réponse R9
 def getAwayGoalsForTop6():
     top6 = getTop6Teams()
     url = BASE_WEB1_DIR + '/calendrier.html'
@@ -256,7 +258,7 @@ def getAwayGoalsForTop6():
 
     return "\n".join(result_lines)
 
-
+# Réponse R10
 def getConfrontationsFirstVsThird():
     url_rank = BASE_WEB1_DIR + '/classement.html'
     soup_rank = searchUtils.getContentByUrl(url_rank)
