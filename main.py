@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from api.api_web_1 import router as api_web_1_0_router
 from api.api_rdfa import router as api_rdfa_router
 from api.api_knowledge_graph import router as api_knowledge_graph_router
+from api.api_sparql_endpoint import router as api_sparql_endpoint_router
 
 app = FastAPI()
 
@@ -35,3 +36,10 @@ async def v3():
 # API Knowledge Graph
 app.include_router(api_knowledge_graph_router)
 
+# Search Engine SPARQL Endpoint
+@app.get("/sparql-endpoint/")
+async def v4():
+    return FileResponse("pages/search_sparql_endpoint.html")
+
+# API SPARQL Endpoint
+app.include_router(api_sparql_endpoint_router)

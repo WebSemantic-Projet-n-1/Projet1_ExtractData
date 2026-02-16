@@ -123,7 +123,7 @@ def getTeamsOver70Goals():
             continue
 
         team_name = cols[1].get_text(strip=True)
-        goals = cols[2].get_text(strip=True)
+        goals = cols[7].get_text(strip=True)
 
         # Vérifie que goals est un nombre et > 70
         try:
@@ -155,7 +155,10 @@ def getMatchesNovember2008():
         score = score_el.get_text(strip=True) if score_el else tds[2].get_text(strip=True)
         away = tds[3].get_text(strip=True)
         matches.append(f"{date} | {home} | {score} | {away}")
-    return matches
+    if matches:
+        return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
+    else:
+        return "Aucun match trouvé en novembre 2008"
 
 
 # Réponse R7
@@ -191,8 +194,11 @@ def getRankingByAwayWins():
                 away_wins += 1
         results.append((team_name, away_wins))
     results.sort(key=lambda x: x[1], reverse=True)
-    return [f"{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
+    return [f"\n{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
+
+
+# Réponse R9
 def getTop6Teams():
     url = BASE_WEB1_DIR + '/classement.html'
     soup = searchUtils.getContentByUrl(url)
@@ -211,7 +217,6 @@ def getTop6Teams():
 
     return teams
 
-# Réponse R9
 def getAwayGoalsForTop6():
     top6 = getTop6Teams()
     url = BASE_WEB1_DIR + '/calendrier.html'
@@ -253,7 +258,7 @@ def getAwayGoalsForTop6():
 
     return "\n".join(result_lines)
 
-
+# Réponse R10
 def getConfrontationsFirstVsThird():
     url_rank = BASE_WEB1_DIR + '/classement.html'
     soup_rank = searchUtils.getContentByUrl(url_rank)

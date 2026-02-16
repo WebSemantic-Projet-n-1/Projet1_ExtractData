@@ -3,3 +3,4 @@ requests
 rdflib
 fastapi[standard]
 pyRdfa3
+SPARQLWrapper

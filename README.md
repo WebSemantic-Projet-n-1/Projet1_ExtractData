@@ -92,3 +92,114 @@ It consists of three search engines that crawl different HTML pages about the 20
 +---web_3.0_rdfa_output
 |       [...]
 ```
+
+## Bonus : Integrated Benchmark
+
+To compare the performance of the three search engines, you can run the benchmark.py script.
+
+```
+python benchmark.py
+```
+
+This will run the benchmark and output the results in the terminal and in the benchmark_results.csv file.
+
+The benchmark_results.csv file can be opened in a spreadsheet to analyze the results.
+
+## Bonus : SPARQL Endpoint
+
+In the folder ../<project> download the apache-jena-fuseki tar.gz file containing the Fuseki server binary.
+
+```
+wget https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-6.0.0.tar.gz 
+```
+
+Extract the tar.gz file.
+```
+tar -xzf apache-jena-fuseki-6.0.0.tar.gz
+```
+
+Start the Fuseki server.
+```
+cd apache-jena-fuseki-6.0.0
+./fuseki-server --update --mem /soccer
+```
+
+Load the knowledge graph into the Fuseki server.
+```
+   curl -X POST "http://localhost:3030/soccer/data" \
+     -H "Content-Type: text/turtle" \
+     --data-binary @knowledge_graph.ttl
+```
+
+The SPARQL Endpoint is a SPARQL 1.1 compliant endpoint that can be used to query the knowledge graph.
+
+It is hosted at http://localhost:3030/soccer/sparql.
+
+The SPARQL Endpoint is used to query the knowledge graph.
+
+
+```
+Starting benchmark: 100 iterations × 10 questions × 4 methods
+Total API calls: 4000
+
+  Web 1.0 | R1: 100 iterations done
+  Web 1.0 | R2: 100 iterations done
+  Web 1.0 | R3: 100 iterations done
+  Web 1.0 | R4: 100 iterations done
+  Web 1.0 | R5: 100 iterations done
+  Web 1.0 | R6: 100 iterations done
+  Web 1.0 | R7: 100 iterations done
+  Web 1.0 | R8: 100 iterations done
+  Web 1.0 | R9: 100 iterations done
+  Web 1.0 | R10: 100 iterations done
+  RDFa | R1: 100 iterations done
+  RDFa | R2: 100 iterations done
+  RDFa | R3: 100 iterations done
+  RDFa | R4: 100 iterations done
+  RDFa | R5: 100 iterations done
+  RDFa | R6: 100 iterations done
+  RDFa | R7: 100 iterations done
+  RDFa | R8: 100 iterations done
+  RDFa | R9: 100 iterations done
+  RDFa | R10: 100 iterations done
+  Knowledge Graph | R1: 100 iterations done
+  Knowledge Graph | R2: 100 iterations done
+  Knowledge Graph | R3: 100 iterations done
+  Knowledge Graph | R4: 100 iterations done
+  Knowledge Graph | R5: 100 iterations done
+  Knowledge Graph | R6: 100 iterations done
+  Knowledge Graph | R7: 100 iterations done
+  Knowledge Graph | R8: 100 iterations done
+  Knowledge Graph | R9: 100 iterations done
+  Knowledge Graph | R10: 100 iterations done
+  SPARQL Endpoint | R1: 100 iterations done
+  SPARQL Endpoint | R2: 100 iterations done
+  SPARQL Endpoint | R3: 100 iterations done
+  SPARQL Endpoint | R4: 100 iterations done
+  SPARQL Endpoint | R5: 100 iterations done
+  SPARQL Endpoint | R6: 100 iterations done
+  SPARQL Endpoint | R7: 100 iterations done
+  SPARQL Endpoint | R8: 100 iterations done
+  SPARQL Endpoint | R9: 100 iterations done
+  SPARQL Endpoint | R10: 100 iterations done
+
+====================================================================================================
+BENCHMARK RESULTS — Server-side processing_ms (mean ± stdev)
+====================================================================================================
+Question |                   Web 1.0 |                      RDFa |           Knowledge Graph |           SPARQL Endpoint
+----------------------------------------------------------------------------------------------------
+R1     |     3.10 ±   2.31 ms |     2.99 ±   1.00 ms |     8.94 ±   2.06 ms |     1.25 ±   0.38 ms
+R2     |     0.63 ±   0.23 ms |     0.83 ±   1.85 ms |     3.13 ±   1.06 ms |     1.07 ±   0.35 ms
+R3     |     0.77 ±   0.86 ms |     0.72 ±   0.67 ms |     5.73 ±   2.75 ms |     1.22 ±   0.25 ms
+R4     |     0.62 ±   0.01 ms |     3.51 ±   0.97 ms |     5.91 ±   2.83 ms |     1.10 ±   0.21 ms
+R5     |     2.77 ±   1.86 ms |     3.48 ±   2.05 ms |     6.49 ±   1.31 ms |     1.13 ±   0.25 ms
+R6     |    20.07 ±   2.92 ms |    29.44 ±   3.47 ms |    24.43 ±   4.79 ms |     2.23 ±   0.70 ms
+R7     |     3.96 ±   1.28 ms |     4.22 ±   1.58 ms |    71.11 ±   4.86 ms |     2.81 ±  17.50 ms
+R8     |    39.67 ±   4.41 ms |    41.11 ±   4.86 ms |    41.96 ±   5.12 ms |     1.93 ±   0.31 ms
+R9     |    24.14 ±   3.75 ms |    30.33 ±   4.17 ms |   397.90 ±   7.68 ms |     8.37 ±  15.16 ms
+R10    |    24.93 ±   3.73 ms |    33.55 ±   3.85 ms |   167.40 ±   5.95 ms |     5.19 ±   0.41 ms
+----------------------------------------------------------------------------------------------------
+AVG    |              12.07 ms avg |              15.02 ms avg |              73.30 ms avg |               2.63 ms avg
+====================================================================================================
+Results exported to benchmark_results.csv
+```

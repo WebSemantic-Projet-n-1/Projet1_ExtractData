@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦝 - Search Engine SPARQL from turtle file</title>
+    <title>🦝 - Search Engine SPARQL from Apache Jena Server</title>
 
     <style>
         * {
@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #4facfe 0%, hsl(158, 100%, 50%) 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -229,13 +229,13 @@
     <div class="page-indicator">
         <button class="page-btn" onclick="window.location.href='/web-1.0'">1</button>
         <button class="page-btn" onclick="window.location.href='/rdfa'">2</button>
-        <button class="page-btn active" onclick="window.location.href='/knowledge-graph'">3</button>
-        <button class="page-btn" onclick="window.location.href='/sparql-endpoint'">4</button>
+        <button class="page-btn" onclick="window.location.href='/knowledge-graph'">3</button>
+        <button class="page-btn active" onclick="window.location.href='/sparql-endpoint'">4</button>
     </div>
 
     <div class="container">
         <header>
-            <h1>Search Engine SPARQL from turtle file</h1>
+            <h1>Search Engine SPARQL from Apache Jena Server</h1>
         </header>
 
         <form id="searchForm" class="search-box" aria-label="Recherche">
@@ -259,7 +259,7 @@
     </div>
 
     <!-- Left button -->
-    <a href="/rdfa" class="nav-btn left">&lt;</a>
+    <a href="/knowledge-graph" class="nav-btn left">&lt;</a>
     
     <!-- Right button (disabled on last page) -->
     <a href="/sparql-endpoint" class="nav-btn right">&gt;</a>
@@ -271,8 +271,8 @@
             var resultsContainer = document.getElementById('resultsContainer');
             var searchInfo = document.getElementById('searchInfo');
             var resultCountEl = document.getElementById('resultCount');
-            var serverTimeEl = document.getElementById('serverTime');
             var searchTimeEl = document.getElementById('searchTime');
+            var serverTimeEl = document.getElementById('serverTime');
 
             // Restore search text from sessionStorage on page load
             var savedQuery = sessionStorage.getItem('searchQuery');
@@ -326,7 +326,7 @@
                 var query = searchInput.value.trim();
                 if (!query) return;
 
-                var url = '/api/knowledge-graph/' + encodeURIComponent(query);
+                var url = '/api/sparql-endpoint/' + encodeURIComponent(query);
 
                 fetch(url)
                     .then(function (res) {

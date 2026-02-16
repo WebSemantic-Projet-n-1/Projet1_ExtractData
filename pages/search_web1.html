@@ -229,6 +229,7 @@
         <button class="page-btn active" onclick="window.location.href='/web-1.0'">1</button>
         <button class="page-btn" onclick="window.location.href='/rdfa'">2</button>
         <button class="page-btn" onclick="window.location.href='/knowledge-graph'">3</button>
+        <button class="page-btn" onclick="window.location.href='/sparql-endpoint'">4</button>
     </div>
 
     <div class="container">
@@ -242,7 +243,10 @@
         </form>
 
         <div class="search-info" id="searchInfo" style="display: none;">
-            <p class="search-time">Environ <strong id="resultCount">0</strong> résultats (temps de traitement : <strong id="serverTime">0.00</strong> ms)</p>
+            <p class="search-time">
+                Environ <strong id="resultCount">0</strong> résultats
+                (temps d'affichage : <strong id="searchTime">0.00</strong> ms - temps de traitement : <strong id="serverTime">0.00</strong> ms)
+            </p>
         </div>
 
         <div class="results-container" id="resultsContainer">
@@ -266,6 +270,7 @@
             var resultsContainer = document.getElementById('resultsContainer');
             var searchInfo = document.getElementById('searchInfo');
             var resultCountEl = document.getElementById('resultCount');
+            var searchTimeEl = document.getElementById('searchTime');
             var serverTimeEl = document.getElementById('serverTime');
 
             // Restore search text from sessionStorage on page load
@@ -315,6 +320,7 @@
 
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
+                var start = performance.now();
                 var query = searchInput.value.trim();
                 if (!query) return;
 
@@ -326,6 +332,8 @@
                         return res.json();
                     })
                     .then(function (data) {
+                        var elapsed = (performance.now() - start);
+                        searchTimeEl.textContent = elapsed.toFixed(2);
                         resultCountEl.textContent = data.datas ? data.datas.length : 0;
                         serverTimeEl.textContent = data.processing_ms;
                         searchInfo.style.display = 'block';

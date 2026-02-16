@@ -105,6 +105,8 @@ def getNumberOfGoals():
 
     return None
 
+
+
 """
 R4 - Team with most goals
 Find the team with most goals using goalsScored property from EQUIPE_FILES
@@ -113,14 +115,18 @@ def getTeamWithMostGoals():
     best_team = None
     best_goals = -1
 
-    for filename in EQUIPE_FILES:
-        url = f"{BASE_RDFA_DIR}/{filename}"
-        soup = utils.getContentByUrl(url)
-        if not soup:
-            continue
+    url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
 
-        name_el = soup.find(attrs={"property": "name"})
-        goals_el = soup.find(attrs={"property": "goalsScored"})
+    rows = soup.find_all("tr", attrs={"typeof": "SportsTeam"})
+    if not rows:
+        return None
+
+    for row in rows:
+        name_el = row.find(attrs={"property": "name"})
+        goals_el = row.find(attrs={"property": "goalsScored"})
         if name_el is None or goals_el is None:
             continue
 
@@ -133,6 +139,8 @@ def getTeamWithMostGoals():
     if best_team is not None and best_goals >= 0:
         return f"{best_team} ({best_goals} buts)"
     return None
+
+
 
 # Réponse R5
 def getTeamsOver70Goals():
@@ -191,9 +199,10 @@ def getMatchesNovember2008():
         score = score_el.get_text(strip=True)
         away = away_el.get_text(strip=True)
         matches.append(f"{date} | {home} | {score} | {away}")
-
-    return matches
-
+    if matches:
+        return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
+    else:
+        return "Aucun match trouvé en novembre 2008"
   
 # Réponse R7
 def getManchesterUnitedHomeWins():
@@ -234,9 +243,10 @@ def getRankingByAwayWins():
         results.append((team_name, away_wins))
 
     results.sort(key=lambda x: x[1], reverse=True)
+    return [f"\n{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
-    return [f" {i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
+# Réponse R9
 def _getTop6Teams():
     url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
     soup = utils.getContentByUrl(url)
@@ -253,7 +263,6 @@ def _getTop6Teams():
     return teams
 
 
-# Réponse R9
 def getAwayGoalsForTop6():
     top6 = _getTop6Teams()
     if not top6:

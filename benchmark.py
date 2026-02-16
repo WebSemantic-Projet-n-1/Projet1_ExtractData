@@ -47,6 +47,7 @@ API_ENDPOINTS = {
     "Web 1.0": "/api/v1/",
     "RDFa": "/api/rdfa/",
     "Knowledge Graph": "/api/knowledge-graph/",
+    "SPARQL Endpoint": "/api/sparql-endpoint/",
 }
 
 
