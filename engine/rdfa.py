@@ -243,9 +243,10 @@ def getRankingByAwayWins():
         results.append((team_name, away_wins))
 
     results.sort(key=lambda x: x[1], reverse=True)
-
     return [f"\n{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
 
+
+# Réponse R9
 def _getTop6Teams():
     url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
     soup = utils.getContentByUrl(url)
@@ -262,7 +263,6 @@ def _getTop6Teams():
     return teams
 
 
-# Réponse R9
 def getAwayGoalsForTop6():
     top6 = _getTop6Teams()
     if not top6:
