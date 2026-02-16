@@ -145,7 +145,7 @@ The SPARQL Endpoint is used to query the knowledge graph.
 
 
 ```
-Starting benchmark: 100 iterations × 10 questions × 4 methods
+Starting API benchmark: 100 iterations × 10 questions × 4 methods
 Total API calls: 4000
 
   Web 1.0 | R1: 100 iterations done
@@ -194,18 +194,82 @@ BENCHMARK RESULTS — Server-side processing_ms (mean ± stdev)
 ====================================================================================================
 Question |                   Web 1.0 |                      RDFa |           Knowledge Graph |           SPARQL Endpoint
 ----------------------------------------------------------------------------------------------------
-R1     |     3.10 ±   2.31 ms |     2.99 ±   1.00 ms |     8.94 ±   2.06 ms |     1.25 ±   0.38 ms
-R2     |     0.63 ±   0.23 ms |     0.83 ±   1.85 ms |     3.13 ±   1.06 ms |     1.07 ±   0.35 ms
-R3     |     0.77 ±   0.86 ms |     0.72 ±   0.67 ms |     5.73 ±   2.75 ms |     1.22 ±   0.25 ms
-R4     |     0.62 ±   0.01 ms |     3.51 ±   0.97 ms |     5.91 ±   2.83 ms |     1.10 ±   0.21 ms
-R5     |     2.77 ±   1.86 ms |     3.48 ±   2.05 ms |     6.49 ±   1.31 ms |     1.13 ±   0.25 ms
-R6     |    20.07 ±   2.92 ms |    29.44 ±   3.47 ms |    24.43 ±   4.79 ms |     2.23 ±   0.70 ms
-R7     |     3.96 ±   1.28 ms |     4.22 ±   1.58 ms |    71.11 ±   4.86 ms |     2.81 ±  17.50 ms
-R8     |    39.67 ±   4.41 ms |    41.11 ±   4.86 ms |    41.96 ±   5.12 ms |     1.93 ±   0.31 ms
-R9     |    24.14 ±   3.75 ms |    30.33 ±   4.17 ms |   397.90 ±   7.68 ms |     8.37 ±  15.16 ms
-R10    |    24.93 ±   3.73 ms |    33.55 ±   3.85 ms |   167.40 ±   5.95 ms |     5.19 ±   0.41 ms
+R1     |     2.98 ±   2.17 ms |     3.15 ±   2.08 ms |     9.05 ±   1.39 ms |     0.62 ±   0.04 ms
+R2     |     0.69 ±   0.71 ms |     0.73 ±   0.60 ms |     3.14 ±   2.66 ms |     0.71 ±   0.09 ms
+R3     |     0.71 ±   0.66 ms |     0.74 ±   0.44 ms |     5.54 ±   1.04 ms |     0.81 ±   0.08 ms
+R4     |     0.68 ±   0.18 ms |     3.46 ±   0.98 ms |     6.21 ±   3.22 ms |     0.92 ±   0.14 ms
+R5     |     2.93 ±   2.34 ms |     3.54 ±   2.19 ms |     6.66 ±   3.22 ms |     0.91 ±   0.12 ms
+R6     |    20.70 ±   3.73 ms |    29.71 ±   3.87 ms |    24.13 ±   3.50 ms |     1.49 ±   0.23 ms
+R7     |     4.09 ±   1.68 ms |     4.22 ±   1.16 ms |    71.87 ±   5.41 ms |     0.95 ±   0.14 ms
+R8     |    39.90 ±   4.84 ms |    41.87 ±   5.32 ms |    42.27 ±   5.11 ms |     1.65 ±   0.42 ms
+R9     |    24.52 ±   3.81 ms |    30.55 ±   4.19 ms |   397.12 ±   7.60 ms |     5.64 ±   0.97 ms
+R10    |    24.93 ±   3.64 ms |    33.64 ±   4.06 ms |   169.00 ±   5.84 ms |     4.62 ±   0.21 ms
 ----------------------------------------------------------------------------------------------------
-AVG    |              12.07 ms avg |              15.02 ms avg |              73.30 ms avg |               2.63 ms avg
+AVG    |              12.21 ms avg |              15.16 ms avg |              73.50 ms avg |               1.83 ms avg
+====================================================================================================
+
+Starting browser benchmark: 100 iterations × 10 questions × 4 methods
+Total browser searches: 4000
+
+  [Browser] Web 1.0 | R1: 100 iterations done
+  [Browser] Web 1.0 | R2: 100 iterations done
+  [Browser] Web 1.0 | R3: 100 iterations done
+  [Browser] Web 1.0 | R4: 100 iterations done
+  [Browser] Web 1.0 | R5: 100 iterations done
+  [Browser] Web 1.0 | R6: 100 iterations done
+  [Browser] Web 1.0 | R7: 100 iterations done
+  [Browser] Web 1.0 | R8: 100 iterations done
+  [Browser] Web 1.0 | R9: 100 iterations done
+  [Browser] Web 1.0 | R10: 100 iterations done
+  [Browser] RDFa | R1: 100 iterations done
+  [Browser] RDFa | R2: 100 iterations done
+  [Browser] RDFa | R3: 100 iterations done
+  [Browser] RDFa | R4: 100 iterations done
+  [Browser] RDFa | R5: 100 iterations done
+  [Browser] RDFa | R6: 100 iterations done
+  [Browser] RDFa | R7: 100 iterations done
+  [Browser] RDFa | R8: 100 iterations done
+  [Browser] RDFa | R9: 100 iterations done
+  [Browser] RDFa | R10: 100 iterations done
+  [Browser] Knowledge Graph | R1: 100 iterations done
+  [Browser] Knowledge Graph | R2: 100 iterations done
+  [Browser] Knowledge Graph | R3: 100 iterations done
+  [Browser] Knowledge Graph | R4: 100 iterations done
+  [Browser] Knowledge Graph | R5: 100 iterations done
+  [Browser] Knowledge Graph | R6: 100 iterations done
+  [Browser] Knowledge Graph | R7: 100 iterations done
+  [Browser] Knowledge Graph | R8: 100 iterations done
+  [Browser] Knowledge Graph | R9: 100 iterations done
+  [Browser] Knowledge Graph | R10: 100 iterations done
+  [Browser] SPARQL Endpoint | R1: 100 iterations done
+  [Browser] SPARQL Endpoint | R2: 100 iterations done
+  [Browser] SPARQL Endpoint | R3: 100 iterations done
+  [Browser] SPARQL Endpoint | R4: 100 iterations done
+  [Browser] SPARQL Endpoint | R5: 100 iterations done
+  [Browser] SPARQL Endpoint | R6: 100 iterations done
+  [Browser] SPARQL Endpoint | R7: 100 iterations done
+  [Browser] SPARQL Endpoint | R8: 100 iterations done
+  [Browser] SPARQL Endpoint | R9: 100 iterations done
+  [Browser] SPARQL Endpoint | R10: 100 iterations done
+
+========================================================================================================================
+BROWSER BENCHMARK — render_ms = full user-perceived time (mean ± stdev)
+========================================================================================================================
+Question |                        Web 1.0 |                           RDFa |                Knowledge Graph |                SPARQL Endpoint
+------------------------------------------------------------------------------------------------------------------------
+R1     |     62.72 ±    1.92 ms |     62.78 ±    1.74 ms |     62.88 ±    1.74 ms |     62.31 ±    0.88 ms
+R2     |     62.39 ±    1.39 ms |     62.72 ±    0.69 ms |     62.33 ±    1.91 ms |     62.65 ±    0.61 ms
+R3     |     62.72 ±    0.88 ms |     62.61 ±    0.82 ms |     62.68 ±    3.43 ms |     62.61 ±    0.75 ms
+R4     |     62.57 ±    1.34 ms |     62.80 ±    0.72 ms |     62.32 ±    0.82 ms |     62.39 ±    0.79 ms
+R5     |     62.77 ±    1.88 ms |     62.88 ±    1.29 ms |     62.90 ±    3.80 ms |     62.42 ±    0.75 ms
+R6     |     63.75 ±    4.02 ms |     70.79 ±    8.70 ms |     64.35 ±    5.50 ms |     62.36 ±    0.81 ms
+R7     |     62.74 ±    0.75 ms |     62.78 ±    0.90 ms |    114.41 ±    5.59 ms |     62.61 ±    0.69 ms
+R8     |     81.83 ±    5.67 ms |     83.20 ±    7.21 ms |     81.83 ±    6.23 ms |     62.31 ±    0.84 ms
+R9     |     65.27 ±    5.55 ms |     71.89 ±    9.65 ms |    437.92 ±   10.66 ms |     63.16 ±    6.71 ms
+R10    |     65.28 ±    5.32 ms |     80.67 ±    3.35 ms |    214.27 ±    5.59 ms |     62.56 ±    0.66 ms
+========================================================================================================================
+----------------------------------------------------------------------------------------------------
+AVG    |              65.20 ms avg |              68.31 ms avg |             122.59 ms avg |              62.54 ms avg
 ====================================================================================================
 Results exported to benchmark_results.csv
 ```
