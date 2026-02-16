@@ -1,0 +1,121 @@
+question;method;metric;mean_ms;median_ms;stdev_ms;min_ms;max_ms
+R1;Web 1.0;server_ms;2.976;2.42;2.168;2.32;21.93
+R1;Web 1.0;client_ms;3.764;3.227;2.236;2.893;22.829
+R1;Web 1.0;render_ms;62.717;62.702;1.919;58.82;79.494
+R2;Web 1.0;server_ms;0.695;0.64;0.711;0.58;7.73
+R2;Web 1.0;client_ms;1.323;1.283;0.711;1.133;8.327
+R2;Web 1.0;render_ms;62.392;62.655;1.388;57.806;65.258
+R3;Web 1.0;server_ms;0.706;0.59;0.656;0.57;6.97
+R3;Web 1.0;client_ms;1.304;1.16;0.682;1.125;7.646
+R3;Web 1.0;render_ms;62.723;62.769;0.875;59.464;64.86
+R4;Web 1.0;server_ms;0.68;0.6;0.182;0.58;1.19
+R4;Web 1.0;client_ms;1.268;1.179;0.19;1.129;1.777
+R4;Web 1.0;render_ms;62.573;62.815;1.339;53.488;64.654
+R5;Web 1.0;server_ms;2.932;2.53;2.339;2.43;24.44
+R5;Web 1.0;client_ms;3.591;3.165;2.389;3.016;25.524
+R5;Web 1.0;render_ms;62.77;62.584;1.88;60.498;79.561
+R6;Web 1.0;server_ms;20.695;18.95;3.735;17.85;35.51
+R6;Web 1.0;client_ms;21.942;20.371;3.809;18.898;37.108
+R6;Web 1.0;render_ms;63.75;62.915;4.023;61.171;80.16
+R7;Web 1.0;server_ms;4.093;3.6;1.683;3.5;18.73
+R7;Web 1.0;client_ms;4.871;4.379;1.708;4.237;19.71
+R7;Web 1.0;render_ms;62.742;62.828;0.75;60.183;64.361
+R8;Web 1.0;server_ms;39.899;39.495;4.841;35.02;52.38
+R8;Web 1.0;client_ms;41.266;40.79;4.879;36.366;53.767
+R8;Web 1.0;render_ms;81.827;79.82;5.672;77.696;97.482
+R9;Web 1.0;server_ms;24.524;23.45;3.806;21.23;37.48
+R9;Web 1.0;client_ms;25.883;24.701;3.852;22.38;39.183
+R9;Web 1.0;render_ms;65.272;63.477;5.555;61.753;81.018
+R10;Web 1.0;server_ms;24.927;24.26;3.637;21.5;36.34
+R10;Web 1.0;client_ms;26.298;25.576;3.677;22.809;37.828
+R10;Web 1.0;render_ms;65.277;63.463;5.322;62.379;80.815
+R1;RDFa;server_ms;3.149;2.77;2.08;2.64;21.46
+R1;RDFa;client_ms;3.982;3.632;2.106;3.283;22.383
+R1;RDFa;render_ms;62.785;62.678;1.738;59.124;78.774
+R2;RDFa;server_ms;0.734;0.66;0.603;0.64;6.36
+R2;RDFa;client_ms;1.397;1.318;0.605;1.298;7.038
+R2;RDFa;render_ms;62.722;62.712;0.69;60.58;64.478
+R3;RDFa;server_ms;0.74;0.65;0.437;0.57;3.68
+R3;RDFa;client_ms;1.379;1.32;0.449;1.136;4.372
+R3;RDFa;render_ms;62.606;62.709;0.816;59.802;64.64
+R4;RDFa;server_ms;3.46;3.195;0.983;3.06;12.06
+R4;RDFa;client_ms;4.175;3.905;1.002;3.767;12.972
+R4;RDFa;render_ms;62.796;62.898;0.725;60.366;65.017
+R5;RDFa;server_ms;3.545;3.16;2.192;3.02;23.63
+R5;RDFa;client_ms;4.276;3.896;2.223;3.683;24.608
+R5;RDFa;render_ms;62.878;62.819;1.288;60.35;74.114
+R6;RDFa;server_ms;29.71;27.68;3.868;26.73;45.23
+R6;RDFa;client_ms;30.877;28.864;3.932;27.839;46.6
+R6;RDFa;render_ms;70.791;64.023;8.696;61.351;96.86
+R7;RDFa;server_ms;4.219;3.78;1.163;3.66;12.52
+R7;RDFa;client_ms;5.002;4.543;1.236;4.302;13.452
+R7;RDFa;render_ms;62.778;62.935;0.901;58.187;64.653
+R8;RDFa;server_ms;41.872;41.54;5.323;36.64;59.23
+R8;RDFa;client_ms;43.117;42.643;5.353;37.687;60.832
+R8;RDFa;render_ms;83.198;79.968;7.213;78.514;114.07
+R9;RDFa;server_ms;30.554;29.615;4.188;26.92;45.46
+R9;RDFa;client_ms;31.831;30.798;4.207;28.125;46.782
+R9;RDFa;render_ms;71.887;64.362;9.648;56.497;97.367
+R10;RDFa;server_ms;33.639;33.025;4.062;29.93;45.61
+R10;RDFa;client_ms;34.98;34.325;4.093;31.21;46.89
+R10;RDFa;render_ms;80.666;80.071;3.349;77.727;96.966
+R1;Knowledge Graph;server_ms;9.054;8.49;1.389;8.26;17.36
+R1;Knowledge Graph;client_ms;9.88;9.309;1.428;8.988;18.648
+R1;Knowledge Graph;render_ms;62.879;62.825;1.743;60.83;78.66
+R2;Knowledge Graph;server_ms;3.144;2.8;2.658;2.72;27.94
+R2;Knowledge Graph;client_ms;3.923;3.588;2.692;3.355;29.02
+R2;Knowledge Graph;render_ms;62.334;62.29;1.91;56.565;78.245
+R3;Knowledge Graph;server_ms;5.535;5.24;1.039;5.12;13.93
+R3;Knowledge Graph;client_ms;6.289;5.971;1.063;5.866;14.912
+R3;Knowledge Graph;render_ms;62.676;62.434;3.429;60.641;95.934
+R4;Knowledge Graph;server_ms;6.207;5.52;3.222;5.42;34.2
+R4;Knowledge Graph;client_ms;7.001;6.267;3.289;6.146;35.322
+R4;Knowledge Graph;render_ms;62.316;62.393;0.818;59.662;64.145
+R5;Knowledge Graph;server_ms;6.659;6.14;3.224;6.03;35.91
+R5;Knowledge Graph;client_ms;7.407;6.893;3.312;6.636;37.452
+R5;Knowledge Graph;render_ms;62.895;62.59;3.8;59.586;95.983
+R6;Knowledge Graph;server_ms;24.126;23.36;3.503;22.9;52.89
+R6;Knowledge Graph;client_ms;25.282;24.527;3.519;23.776;54.008
+R6;Knowledge Graph;render_ms;64.349;63.304;5.499;60.594;96.708
+R7;Knowledge Graph;server_ms;71.869;70.22;5.406;69.07;102.5
+R7;Knowledge Graph;client_ms;73.187;71.497;5.47;70.124;103.806
+R7;Knowledge Graph;render_ms;114.413;113.266;5.586;111.371;147.338
+R8;Knowledge Graph;server_ms;42.267;40.67;5.107;39.68;73.09
+R8;Knowledge Graph;client_ms;43.598;41.998;5.167;40.958;74.605
+R8;Knowledge Graph;render_ms;81.829;80.122;6.23;78.344;113.556
+R9;Knowledge Graph;server_ms;397.115;395.075;7.596;390.01;428.24
+R9;Knowledge Graph;client_ms;398.595;396.674;7.636;391.121;429.708
+R9;Knowledge Graph;render_ms;437.919;430.357;10.66;428.157;478.648
+R10;Knowledge Graph;server_ms;168.999;167.295;5.836;164.54;202.64
+R10;Knowledge Graph;client_ms;170.394;168.665;5.839;165.815;203.81
+R10;Knowledge Graph;render_ms;214.274;213.183;5.594;209.938;247.281
+R1;SPARQL Endpoint;server_ms;0.62;0.61;0.042;0.58;0.84
+R1;SPARQL Endpoint;client_ms;1.448;1.438;0.049;1.356;1.665
+R1;SPARQL Endpoint;render_ms;62.309;62.376;0.879;59.539;64.256
+R2;SPARQL Endpoint;server_ms;0.711;0.7;0.086;0.59;1.22
+R2;SPARQL Endpoint;client_ms;1.509;1.478;0.209;1.306;2.831
+R2;SPARQL Endpoint;render_ms;62.649;62.663;0.608;61.169;64.065
+R3;SPARQL Endpoint;server_ms;0.806;0.795;0.084;0.7;1.39
+R3;SPARQL Endpoint;client_ms;1.523;1.523;0.111;1.339;2.186
+R3;SPARQL Endpoint;render_ms;62.611;62.632;0.75;60.258;64.817
+R4;SPARQL Endpoint;server_ms;0.918;0.83;0.136;0.8;1.26
+R4;SPARQL Endpoint;client_ms;1.647;1.543;0.169;1.492;2.077
+R4;SPARQL Endpoint;render_ms;62.394;62.449;0.789;58.822;63.859
+R5;SPARQL Endpoint;server_ms;0.905;0.84;0.118;0.79;1.21
+R5;SPARQL Endpoint;client_ms;1.636;1.547;0.161;1.492;2.021
+R5;SPARQL Endpoint;render_ms;62.425;62.534;0.747;60.333;63.86
+R6;SPARQL Endpoint;server_ms;1.49;1.45;0.227;1.41;3.5
+R6;SPARQL Endpoint;client_ms;2.242;2.179;0.248;2.113;4.331
+R6;SPARQL Endpoint;render_ms;62.36;62.453;0.805;59.995;64.313
+R7;SPARQL Endpoint;server_ms;0.949;0.96;0.139;0.81;1.28
+R7;SPARQL Endpoint;client_ms;1.736;1.733;0.148;1.577;2.222
+R7;SPARQL Endpoint;render_ms;62.607;62.668;0.689;60.56;64.168
+R8;SPARQL Endpoint;server_ms;1.648;1.64;0.421;1.4;5.56
+R8;SPARQL Endpoint;client_ms;2.444;2.443;0.432;2.147;6.43
+R8;SPARQL Endpoint;render_ms;62.313;62.356;0.84;59.111;64.716
+R9;SPARQL Endpoint;server_ms;5.64;5.93;0.971;4.31;7.99
+R9;SPARQL Endpoint;client_ms;6.758;6.88;1.217;5.1;9.477
+R9;SPARQL Endpoint;render_ms;63.157;62.523;6.711;60.948;129.285
+R10;SPARQL Endpoint;server_ms;4.62;4.57;0.206;4.49;6.04
+R10;SPARQL Endpoint;client_ms;5.505;5.446;0.231;5.35;7.087
+R10;SPARQL Endpoint;render_ms;62.564;62.67;0.66;60.392;63.741

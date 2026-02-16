@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+"""
+RDF SEARCH ENGINE
+Exploits RDFa markup in enriched HTML to answer requests.
+"""
+
+import re
+
+import engine.engine_utils as utils
+
+BASE_RDFA_DIR =  "web_3.0_rdfa_output"
+
+EQUIPE_FILES = [
+    "equipe_Arsenal_enrichi.html",
+    "equipe_Aston_Villa_enrichi.html",
+    "equipe_Chelsea_enrichi.html",
+    "equipe_Everton_enrichi.html",
+    "equipe_Fulham_enrichi.html",
+    "equipe_Liverpool_enrichi.html",
+    "equipe_Manchester_City_enrichi.html",
+    "equipe_Manchester_United_enrichi.html",
+    "equipe_Tottenham_Hotspur_enrichi.html",
+    "equipe_West_Ham_United_enrichi.html",
+]
+
+def _extract_first_int(text):
+    if text is None:
+        return None
+    m = re.search(r"(\d+)", text)
+    return int(m.group(1)) if m else None
+
+def _parse_score(score_text):
+    """Parse 'x - y' into (x, y)."""
+    if not score_text:
+        return None
+    m = re.search(r"(\d+)\s*-\s*(\d+)", score_text)
+    if not m:
+        return None
+    return int(m.group(1)), int(m.group(2))
+
+# Request R1: first team in classement using RDFa
+def getFirstTeamInClassment():
+    url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
+
+    # Exploit RDFa: find the first row typed as SportsTeam (schema.org)
+    first_team_row = soup.find('tr', attrs={'typeof': 'SportsTeam'})
+    if not first_team_row:
+        return None
+
+    # Get the team name from the cell with property="name"
+    name_cell = first_team_row.find(attrs={'property': 'name'})
+    if not name_cell:
+        return None
+
+    name = name_cell.get_text(strip=True)
+    if name:
+        print('nameOfTheTeam:', name)
+        return name
+    return None
+
+
+"""
+R2 - Number of matches played this season
+Using the RDFa attribute numberOfGames from the stat-box div
+"""
+def getNumberOfMatchesPlayedThisSeason():
+    url = f"{BASE_RDFA_DIR}/statistiques_enrichi.html"
+
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
+        
+    # No RDFa attribute for this
+    boxes = soup.find_all("div", class_="stat-box")
+    if not boxes:
+        return None
+    first_box = boxes[0]
+    for p in first_box.find_all("p"):
+        if "Nombre total de matchs" in p.get_text():
+            nb = _extract_first_int(p.get_text())
+            return str(nb) if nb is not None else None
+    return None
+
+
+# Réponse R3
+def getNumberOfGoals():
+    url = f"{BASE_RDFA_DIR}/statistiques_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
+
+    # No RDFa attribute for this
+    boxes = soup.find_all("div", class_="stat-box")
+    if not boxes:
+        return None
+    first_box = boxes[0]
+    for p in first_box.find_all("p"):
+        if "Nombre total de buts" in p.get_text():
+            nb = _extract_first_int(p.get_text())
+            return str(nb) if nb is not None else None
+
+    return None
+
+
+
+"""
+R4 - Team with most goals
+Find the team with most goals using goalsScored property from EQUIPE_FILES
+"""
+def getTeamWithMostGoals():
+    best_team = None
+    best_goals = -1
+
+    url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
+
+    rows = soup.find_all("tr", attrs={"typeof": "SportsTeam"})
+    if not rows:
+        return None
+
+    for row in rows:
+        name_el = row.find(attrs={"property": "name"})
+        goals_el = row.find(attrs={"property": "goalsScored"})
+        if name_el is None or goals_el is None:
+            continue
+
+        team_name = name_el.get_text(strip=True)
+        goals = _extract_first_int(goals_el.get_text(strip=True))
+        if team_name and goals is not None and goals > best_goals:
+            best_goals = goals
+            best_team = team_name
+
+    if best_team is not None and best_goals >= 0:
+        return f"{best_team} ({best_goals} buts)"
+    return None
+
+
+
+# Réponse R5
+def getTeamsOver70Goals():
+    url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if soup is None:
+        return None
+
+    rows = soup.find_all("tr", attrs={"typeof": "SportsTeam"})
+    if not rows:
+        return None
+
+    teams = []
+
+    for row in rows:
+        name_el = row.find(attrs={"property": "name"})
+        goals_el = row.find(attrs={"property": "goalsScored"})
+
+        if name_el is None or goals_el is None:
+            continue
+
+        team_name = name_el.get_text(strip=True)
+        goals_text = goals_el.get_text(strip=True)
+
+        goals = _extract_first_int(goals_text)
+        if goals is None:
+            continue
+
+        if goals > 70:
+            teams.append(team_name)
+
+    return teams if teams else None
+
+# Réponse R6
+def getMatchesNovember2008():
+    url = f"{BASE_RDFA_DIR}/calendrier_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return []
+
+    matches = []
+    for row in soup.find_all("tr", attrs={"typeof": "SportsEvent"}):
+        date_el = row.find(attrs={"property": "startDate"})
+        home_el = row.find(attrs={"property": "homeTeam"})
+        score_el = row.find(attrs={"property": "score"})
+        away_el = row.find(attrs={"property": "awayTeam"})
+
+        if not date_el or not home_el or not score_el or not away_el:
+            continue
+
+        date = date_el.get_text(strip=True)
+        if "/11/2008" not in date:
+            continue
+
+        home = home_el.get_text(strip=True)
+        score = score_el.get_text(strip=True)
+        away = away_el.get_text(strip=True)
+        matches.append(f"{date} | {home} | {score} | {away}")
+    if matches:
+        return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
+    else:
+        return "Aucun match trouvé en novembre 2008"
+  
+# Réponse R7
+def getManchesterUnitedHomeWins():
+    url = f"{BASE_RDFA_DIR}/equipe_Manchester_United_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return None
+
+    divs = utils.getMatchResultDivs(soup)
+    count = 0
+    for div in divs:
+        text = div.get_text()
+        if "Domicile" in text and "Victoire" in text:
+            count += 1
+    return count
+
+# Réponse R8
+def getRankingByAwayWins():
+    results = []
+
+    for filename in EQUIPE_FILES:
+        url = f"{BASE_RDFA_DIR}/{filename}"
+        soup = utils.getContentByUrl(url)
+        if soup is None:
+            continue
+
+        name_el = soup.find(attrs={"property": "name"})
+        team_name = name_el.get_text(strip=True) if name_el else "Inconnu"
+
+        divs = utils.getMatchResultDivs(soup)
+        away_wins = 0
+
+        for d in divs:
+            text = d.get_text()
+            if "Extérieur" in text and "Victoire" in text:
+                away_wins += 1
+
+        results.append((team_name, away_wins))
+
+    results.sort(key=lambda x: x[1], reverse=True)
+    return [f"\n{i + 1}. {name} - {n} victoires" for i, (name, n) in enumerate(results)]
+
+
+# Réponse R9
+def _getTop6Teams():
+    url = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return []
+
+    rows = soup.find_all("tr", attrs={"typeof": "SportsTeam"})
+    teams = []
+    for row in rows[:6]:
+        name_cell = row.find(attrs={"property": "name"})
+        if name_cell is None:
+            continue
+        teams.append(name_cell.get_text(strip=True))
+    return teams
+
+
+def getAwayGoalsForTop6():
+    top6 = _getTop6Teams()
+    if not top6:
+        return ""
+
+    url = f"{BASE_RDFA_DIR}/calendrier_enrichi.html"
+    soup = utils.getContentByUrl(url)
+    if not soup:
+        return ""
+
+    away_goals = {team: 0 for team in top6}
+
+    for row in soup.find_all("tr", attrs={"typeof": "SportsEvent"}):
+        away_el = row.find(attrs={"property": "awayTeam"})
+        score_el = row.find(attrs={"property": "score"})
+        if away_el is None or score_el is None:
+            continue
+
+        away = away_el.get_text(strip=True)
+        if away not in away_goals:
+            continue
+
+        score = score_el.get_text(strip=True)
+        parsed = _parse_score(score)
+        if not parsed:
+            continue
+        _, away_nb = parsed
+        away_goals[away] += away_nb
+
+    avg = sum(away_goals.values()) / len(top6)
+
+    result_lines = [
+        "Buts marqués à l'extérieur par les équipes du Top 6 :",
+        f"Moyenne (sur 6 équipes) : {avg:.2f} buts",
+    ]
+    for team, goals in away_goals.items():
+        result_lines.append(f"{team} : {goals} buts")
+
+    return "\n".join(result_lines)
+
+
+# Réponse R10
+def getConfrontationsFirstVsThird():
+    url_rank = f"{BASE_RDFA_DIR}/classement_enrichi.html"
+    soup_rank = utils.getContentByUrl(url_rank)
+    if not soup_rank:
+        return "Erreur : classement introuvable."
+
+    rows = soup_rank.find_all("tr", attrs={"typeof": "SportsTeam"})
+    if len(rows) < 3:
+        return "Erreur : classement incomplet."
+
+    first_team_cell = rows[0].find(attrs={"property": "name"})
+    third_team_cell = rows[2].find(attrs={"property": "name"})
+    if first_team_cell is None or third_team_cell is None:
+        return "Erreur : équipes introuvables."
+
+    first_team = first_team_cell.get_text(strip=True)
+    third_team = third_team_cell.get_text(strip=True)
+
+    url_cal = f"{BASE_RDFA_DIR}/calendrier_enrichi.html"
+    soup_cal = utils.getContentByUrl(url_cal)
+    if not soup_cal:
+        return "Erreur : calendrier introuvable."
+
+    confrontations = []
+
+    for row in soup_cal.find_all("tr", attrs={"typeof": "SportsEvent"}):
+        date_el = row.find(attrs={"property": "startDate"})
+        home_el = row.find(attrs={"property": "homeTeam"})
+        score_el = row.find(attrs={"property": "score"})
+        away_el = row.find(attrs={"property": "awayTeam"})
+        if not date_el or not home_el or not score_el or not away_el:
+            continue
+
+        date = date_el.get_text(strip=True)
+        home = home_el.get_text(strip=True)
+        score = score_el.get_text(strip=True)
+        away = away_el.get_text(strip=True)
+
+        teams = {home, away}
+        if first_team not in teams or third_team not in teams:
+            continue
+
+        parsed = _parse_score(score)
+        if not parsed:
+            result = "Score invalide"
+        else:
+            home_goals, away_goals = parsed
+            if home == first_team:
+                if home_goals > away_goals:
+                    result = "Victoire du premier"
+                elif home_goals < away_goals:
+                    result = "Défaite du premier"
+                else:
+                    result = "Match nul"
+            else:
+                # first_team is away
+                if away_goals > home_goals:
+                    result = "Victoire du premier"
+                elif away_goals < home_goals:
+                    result = "Défaite du premier"
+                else:
+                    result = "Match nul"
+
+        confrontations.append(f"{date} | {home} | {score} | {away} | {result}" )
+
+    if not confrontations:
+        return f"Aucune confrontation trouvée entre {first_team} et {third_team}."
+
+    return "\n".join(confrontations)

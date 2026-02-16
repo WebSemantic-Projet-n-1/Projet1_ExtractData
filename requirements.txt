@@ -1,0 +1,7 @@
+beautifulsoup4
+requests
+rdflib
+fastapi[standard]
+pyRdfa3
+SPARQLWrapper
+playwright
