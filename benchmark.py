@@ -16,6 +16,7 @@ import time           # High-resolution timing with perf_counter()
 import statistics     # Descriptive stats: mean, median, stdev
 import json           # (available if JSON export is needed later)
 from urllib.parse import quote  # URL-encode French characters (accents, spaces, ?)
+from playwright.sync_api import sync_playwright
 
 # --- Third-party imports ---
 import requests       # HTTP client to call the FastAPI endpoints
@@ -51,7 +52,7 @@ API_ENDPOINTS = {
 }
 
 
-def benchmark(n_iterations: int = 30):
+def benchmark(n_iterations: int = 100, n_warmup: int = 5):
     """
     Core benchmarking function.
 
@@ -86,7 +87,7 @@ def benchmark(n_iterations: int = 30):
             client_times = []  # Will hold N client-side round-trip ms values
 
             # --- Inner loop: repeat the same call N times ---
-            for i in range(n_iterations):
+                for i in range(n_warmup + n_iterations):
                 # Build the full URL.
                 # quote() encodes special characters: spaces → %20,
                 # accents → %C3%A9, question marks → %3F, etc.
@@ -113,8 +114,9 @@ def benchmark(n_iterations: int = 30):
                     # Extract the server-side processing time.
                     # This is the time measured *inside* the API route handler,
                     # excluding HTTP/network overhead.
-                    server_times.append(data.get("processing_ms", 0))
-                    client_times.append(client_ms)
+                    if i >= n_warmup:
+                        server_times.append(data.get("processing_ms", 0))
+                        client_times.append(client_ms)
                 else:
                     # Log failed requests but continue — don't let one failure
                     # abort the entire benchmark.
@@ -130,6 +132,104 @@ def benchmark(n_iterations: int = 30):
             print(f"  {method_name} | {q_id}: {n_iterations} iterations done")
 
     return results
+
+
+
+# Mapping from method name to its search page route
+SEARCH_PAGES = {
+    "Web 1.0": "/web-1.0/",
+    "RDFa": "/rdfa/",
+    "Knowledge Graph": "/knowledge-graph/",
+    "SPARQL Endpoint": "/sparql-endpoint/",
+}
+
+
+def benchmark_browser(n_iterations: int = 100, n_warmup: int = 5):
+    """
+    Browser-based benchmark using Playwright.
+
+    For every (method × question), loads the actual search page, types the
+    question, submits the form, and waits for the DOM to render results.
+
+    Captures three timing layers:
+      - render_ms:  Playwright-measured time from click to results visible in DOM
+                    (includes fetch + JS processing + DOM rendering + paint)
+      - display_ms: The page's own JS performance.now() measurement
+                    ("temps d'affichage", fetch round-trip only)
+      - server_ms:  The API's processing_ms ("temps de traitement")
+
+    Returns the same nested dict structure as benchmark() for compatibility:
+        results[method][q_id] = {
+            "render_ms": [...], "display_ms": [...], "server_ms": [...]
+        }
+    """
+    results = {}
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+
+        for method_name, page_path in SEARCH_PAGES.items():
+            results[method_name] = {}
+
+            # Navigate to this method's search page once
+            page.goto(f"{BASE_URL}{page_path}")
+            page.wait_for_load_state("domcontentloaded")
+
+            for q_id, question in REQUESTS_QUESTIONS.items():
+                render_times = []
+                display_times = []
+                server_times = []
+
+                for i in range(n_warmup + n_iterations):
+                    # --- Reset state from previous search ---
+                    # Hide the info bar so we can detect when it reappears
+                    page.evaluate(
+                        "document.getElementById('searchInfo').style.display = 'none'"
+                    )
+
+                    # Clear input and type the question
+                    page.fill("#searchInput", question)
+
+                    # --- Measure full render time ---
+                    t0 = time.perf_counter()
+
+                    # Submit the form
+                    page.click("#searchForm button[type='submit']")
+
+                    # Wait until the page's JS has finished updating the DOM:
+                    # searchInfo becomes visible only after fetch() resolves
+                    # AND renderResults() has been called (synchronous in your JS)
+                    page.wait_for_function(
+                        "document.getElementById('searchInfo').style.display !== 'none'",
+                        timeout=10000,
+                    )
+
+                    t1 = time.perf_counter()
+                    render_ms = (t1 - t0) * 1000
+
+                    # --- Read the timings the page itself computed ---
+                    display_ms = float(page.text_content("#searchTime"))
+                    server_ms = float(page.text_content("#serverTime"))
+
+                    # Discard warm-up iterations to avoid cold-start bias
+                    if i >= n_warmup:
+                        render_times.append(round(render_ms, 3))
+                        display_times.append(display_ms)
+                        server_times.append(server_ms)
+
+                results[method_name][q_id] = {
+                    "render_ms": render_times,
+                    "display_ms": display_times,
+                    "server_ms": server_times,
+                }
+
+                print(f"  [Browser] {method_name} | {q_id}: {n_iterations} iterations done")
+
+        browser.close()
+
+    return results
+
 
 
 def compute_stats(times: list[float]) -> dict:
@@ -216,7 +316,7 @@ def export_results_csv(results: dict, filename: str = "benchmark_results.csv"):
     Export benchmark results to a CSV file in "long format".
 
     Long format means one row per (question, method, metric) combination.
-    This produces 10 questions × 3 methods × 2 metrics = 60 rows.
+    This produces 100 questions × 3 methods × 3 metrics = 900 rows.
 
     Long format is preferred because it's directly usable by:
       - Spreadsheet pivot tables (Excel, LibreOffice Calc, Google Sheets)
@@ -226,7 +326,7 @@ def export_results_csv(results: dict, filename: str = "benchmark_results.csv"):
     Columns:
       question   — R1, R2, ..., R10
       method     — Web 1.0, RDFa, Knowledge Graph
-      metric     — "server_ms" (API-side only) or "client_ms" (full round-trip)
+      metric     — "server_ms" (API-side only) or "client_ms" (full round-trip) or "render_ms" (browser-side only)
       mean_ms    — arithmetic mean across all iterations
       median_ms  — median (robust to outliers)
       stdev_ms   — standard deviation (consistency measure)
@@ -255,7 +355,7 @@ def export_results_csv(results: dict, filename: str = "benchmark_results.csv"):
         for method in results:
             for q_id in results[method]:
                 # Export both timing perspectives for each combination
-                for metric in ("server_ms", "client_ms"):
+                for metric in ("server_ms", "client_ms", "render_ms"):
                     stats = compute_stats(results[method][q_id][metric])
                     writer.writerow([
                         q_id,           # e.g. "R1"
@@ -271,24 +371,71 @@ def export_results_csv(results: dict, filename: str = "benchmark_results.csv"):
     print(f"Results exported to {filename}")
 
 
+
+def print_browser_comparison_table(results: dict):
+    print("\n" + "=" * 120)
+    print("BROWSER BENCHMARK — render_ms = full user-perceived time (mean ± stdev)")
+    print("=" * 120)
+
+    header = f"{'Question':<6}"
+    for method in SEARCH_PAGES:
+        header += f" | {method:>30}"
+    print(header)
+    print("-" * 120)
+
+    for q_id in REQUESTS_QUESTIONS:
+        row = f"{q_id:<6}"
+        for method in SEARCH_PAGES:
+            stats = compute_stats(results[method][q_id]["render_ms"])
+            row += f" | {stats['mean']:>9.2f} ± {stats['stdev']:>7.2f} ms"
+        print(row)
+
+    print("=" * 120)
+    # --- Summary row: global average per method ---
+    # Computes the mean of all per-question means for each method.
+    # This gives a single number to compare overall method performance.
+    print("-" * 100)
+    row = f"{'AVG':<6}"
+    for method in SEARCH_PAGES:
+        all_means = [
+            statistics.mean(results[method][q_id]["server_ms"])
+            for q_id in REQUESTS_QUESTIONS
+            if results[method][q_id]["server_ms"]  # skip if empty (all requests failed)
+        ]
+        avg = statistics.mean(all_means) if all_means else 0
+        row += f" | {avg:>18.2f} ms avg"
+    print(row)
+    print("=" * 100)
+
+
+
 # ============================================================================
 # Entry point — only runs when the script is executed directly
 # (not when imported as a module)
 # ============================================================================
 if __name__ == "__main__":
-    # Number of times each (method, question) pair is called.
-    # 30 is the statistical minimum for meaningful comparison (CLT).
-    # Increase to 50–100 for more precise results if time allows.
-    N = 100
-
-    # Total API calls = N × 10 questions × 3 methods
-    total_calls = N * len(REQUESTS_QUESTIONS) * len(API_ENDPOINTS)
-    print(f"Starting benchmark: {N} iterations × {len(REQUESTS_QUESTIONS)} questions × {len(API_ENDPOINTS)} methods")
+    # --- API benchmark ---
+    N_API = 100
+    total_calls = N_API * len(REQUESTS_QUESTIONS) * len(API_ENDPOINTS)
+    print(f"Starting API benchmark: {N_API} iterations × {len(REQUESTS_QUESTIONS)} questions × {len(API_ENDPOINTS)} methods")
     print(f"Total API calls: {total_calls}\n")
 
-    # --- Run the benchmark ---
-    results = benchmark(n_iterations=N)
+    results = benchmark(n_iterations=N_API)
+    print_comparison_table(results)
 
-    # --- Output results ---
-    print_comparison_table(results)  # Quick visual summary in the terminal
-    export_results_csv(results)      # Detailed data for spreadsheets/analysis
+    # --- Browser benchmark ---
+    N_BROWSER = 100
+    total_browser = N_BROWSER * len(REQUESTS_QUESTIONS) * len(SEARCH_PAGES)
+    print(f"\nStarting browser benchmark: {N_BROWSER} iterations × {len(REQUESTS_QUESTIONS)} questions × {len(SEARCH_PAGES)} methods")
+    print(f"Total browser searches: {total_browser}\n")
+
+    results_browser = benchmark_browser(n_iterations=N_BROWSER)
+    print_browser_comparison_table(results_browser)
+
+    # --- Merge render_ms from browser results into main results ---
+    for method in results_browser:
+        for q_id in results_browser[method]:
+            results[method][q_id]["render_ms"] = results_browser[method][q_id]["render_ms"]
+
+    # --- Export single unified CSV ---
+    export_results_csv(results)

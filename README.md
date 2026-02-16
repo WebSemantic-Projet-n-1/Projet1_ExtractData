@@ -97,6 +97,12 @@ It consists of three search engines that crawl different HTML pages about the 20
 
 To compare the performance of the three search engines, you can run the benchmark.py script.
 
+First, install the playwright browser.
+```
+playwright install chromium
+```
+
+Then, run the benchmark.py script.
 ```
 python benchmark.py
 ```
