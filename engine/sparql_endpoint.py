@@ -159,9 +159,11 @@ def getMatchesNovember2008():
     matches = []
     if results["results"]["bindings"]:
         for row in results["results"]["bindings"]:
-            matches.append(f"\n {row["matchDate"]["value"]}: {row["homeTeamName"]["value"]} vs {row["awayTeamName"]["value"]} ({row["score"]["value"]})")
-    return matches if matches else None
-
+            matches.append(f"{row["matchDate"]["value"]}: {row["homeTeamName"]["value"]} vs {row["awayTeamName"]["value"]} ({row["score"]["value"]})")
+    if matches:
+        return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
+    else:
+        return "Aucun match trouvé en novembre 2008"
 
 # Réponse R7
 def getManchesterUnitedHomeWins():

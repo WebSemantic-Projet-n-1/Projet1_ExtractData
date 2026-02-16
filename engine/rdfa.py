@@ -199,9 +199,10 @@ def getMatchesNovember2008():
         score = score_el.get_text(strip=True)
         away = away_el.get_text(strip=True)
         matches.append(f"{date} | {home} | {score} | {away}")
-
-    return matches
-
+    if matches:
+        return f"{len(matches)} matchs en novembre 2008:\n" + "\n".join(matches)
+    else:
+        return "Aucun match trouvé en novembre 2008"
   
 # Réponse R7
 def getManchesterUnitedHomeWins():
