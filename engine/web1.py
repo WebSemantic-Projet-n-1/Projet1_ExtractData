@@ -123,7 +123,7 @@ def getTeamsOver70Goals():
             continue
 
         team_name = cols[1].get_text(strip=True)
-        goals = cols[2].get_text(strip=True)
+        goals = cols[7].get_text(strip=True)
 
         # Vérifie que goals est un nombre et > 70
         try:
