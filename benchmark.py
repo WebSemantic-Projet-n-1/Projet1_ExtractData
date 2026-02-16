@@ -398,9 +398,9 @@ def print_browser_comparison_table(results: dict):
     row = f"{'AVG':<6}"
     for method in SEARCH_PAGES:
         all_means = [
-            statistics.mean(results[method][q_id]["server_ms"])
+            statistics.mean(results[method][q_id]["render_ms"])
             for q_id in REQUESTS_QUESTIONS
-            if results[method][q_id]["server_ms"]  # skip if empty (all requests failed)
+            if results[method][q_id]["render_ms"]  # skip if empty (all requests failed)
         ]
         avg = statistics.mean(all_means) if all_means else 0
         row += f" | {avg:>18.2f} ms avg"
