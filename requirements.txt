@@ -1,7 +1,7 @@
-beautifulsoup4
-requests
-rdflib
+beautifulsoup4==4.14.3
+requests==2.32.5
+rdflib==7.5.0
 fastapi[standard]
-pyRdfa3
-SPARQLWrapper
-playwright
+pyRdfa3==3.6.5
+SPARQLWrapper==2.0.0
+playwright==1.58.0
